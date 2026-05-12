@@ -15,7 +15,7 @@ async fn hello() -> (StatusCode, Json<Response>) {
 }
 
 #[tokio::main]
-async fn main() -> Result<(), Box<dyn std::error::Error>> {
+async fn main() -> anyhow::Result<()> {
     let app = Router::new().route("/", get(hello));
 
     let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await?;
