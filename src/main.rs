@@ -1,3 +1,4 @@
+use anyhow::Context;
 use axum::{Json, Router, http::StatusCode, routing::get};
 use serde::Serialize;
 
@@ -18,9 +19,13 @@ async fn hello() -> (StatusCode, Json<Response>) {
 async fn main() -> anyhow::Result<()> {
     let app = Router::new().route("/", get(hello));
 
-    let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await?;
+    let listener = tokio::net::TcpListener::bind("0.0.0.0:3000")
+        .await
+        .context("Failed to bind TCP Listener")?;
 
     println!("Listening on http://localhost:3000");
-    axum::serve(listener, app).await?;
+    axum::serve(listener, app)
+        .await
+        .context("axum::serve Failed")?;
     Ok(())
 }
