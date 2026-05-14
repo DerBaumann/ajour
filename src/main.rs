@@ -1,18 +1,22 @@
-use std::sync::Arc;
+use std::{
+    net::{Ipv4Addr, SocketAddrV4},
+    sync::Arc,
+};
 
 use anyhow::Context;
-use axum::{Json, Router, extract::State, http::StatusCode, routing::get};
+use axum::{Json, Router, http::StatusCode, routing::get};
 use clap::Parser;
 use serde::Serialize;
 use sqlx::{PgPool, postgres::PgPoolOptions};
 
 // TODO: Split main up
 
-// TODO: Add Port to config
 #[derive(Debug, clap::Parser)]
 struct Config {
     #[arg(long, env)]
     db_url: String,
+    #[arg(long, short, env)]
+    port: u16,
 }
 
 #[derive(Debug, Clone)]
@@ -26,9 +30,7 @@ struct Response {
     message: &'static str,
 }
 
-async fn hello(State(ctx): State<AppContext>) -> (StatusCode, Json<Response>) {
-    // TODO: Delete me!
-    println!("{}", ctx.db.size());
+async fn hello() -> (StatusCode, Json<Response>) {
     let response = Response {
         message: "Hello, World!",
     };
@@ -57,13 +59,15 @@ async fn main() -> anyhow::Result<()> {
         db: pool,
     };
 
+    let addr = SocketAddrV4::new(Ipv4Addr::new(0, 0, 0, 0), ctx.config.port);
+
     let app = Router::new().route("/", get(hello)).with_state(ctx);
 
-    let listener = tokio::net::TcpListener::bind("0.0.0.0:3000")
+    let listener = tokio::net::TcpListener::bind(addr)
         .await
         .context("Failed to bind TCP Listener")?;
 
-    println!("Listening on http://localhost:3000");
+    println!("Listening on {}", addr);
     axum::serve(listener, app)
         .await
         .context("axum::serve Failed")?;
