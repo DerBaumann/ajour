@@ -1,19 +1,17 @@
-use axum::{Json, Router, http::StatusCode, routing::get};
-use serde::Serialize;
+use anyhow::Context;
+use askama::Template;
+use axum::{Router, http::StatusCode, response::Html, routing::get};
 
-use crate::core::AppState;
+use crate::core::{AppState, errors::AnyhowError};
 
-#[derive(Serialize)]
-struct Response {
-    message: &'static str,
-}
+#[derive(Template)]
+#[template(path = "index.html")]
+struct HomeTemplate;
 
-async fn hello() -> (StatusCode, Json<Response>) {
-    let response = Response {
-        message: "Hello, World!",
-    };
+async fn hello() -> Result<(StatusCode, Html<String>), AnyhowError> {
+    let tmpl = HomeTemplate.render().context("Failed to render template")?;
 
-    (StatusCode::OK, Json(response))
+    Ok((StatusCode::OK, Html(tmpl)))
 }
 
 pub fn app_router(state: AppState) -> Router {

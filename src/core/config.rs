@@ -1,3 +1,5 @@
+// TODO: Add default port
+
 #[derive(Debug, clap::Parser)]
 pub struct Config {
     #[arg(long, env)]
