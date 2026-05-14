@@ -1,42 +1,8 @@
-use std::{
-    net::{Ipv4Addr, SocketAddrV4},
-    sync::Arc,
-};
+use std::sync::Arc;
 
 use anyhow::Context;
-use axum::{Json, Router, http::StatusCode, routing::get};
 use clap::Parser;
-use serde::Serialize;
-use sqlx::{PgPool, postgres::PgPoolOptions};
-
-// TODO: Split main up
-
-#[derive(Debug, clap::Parser)]
-struct Config {
-    #[arg(long, env)]
-    db_url: String,
-    #[arg(long, short, env)]
-    port: u16,
-}
-
-#[derive(Debug, Clone)]
-struct AppContext {
-    config: Arc<Config>,
-    db: PgPool,
-}
-
-#[derive(Serialize)]
-struct Response {
-    message: &'static str,
-}
-
-async fn hello() -> (StatusCode, Json<Response>) {
-    let response = Response {
-        message: "Hello, World!",
-    };
-
-    (StatusCode::OK, Json(response))
-}
+use task_manager::core::{AppState, config::Config, get_db_pool, router::app_router, serve_app};
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
@@ -45,31 +11,19 @@ async fn main() -> anyhow::Result<()> {
     dotenvy::dotenv().ok();
 
     let config = Config::parse();
+    let port = config.port;
 
-    let pool = PgPoolOptions::new()
-        .max_connections(5)
-        .connect(&config.db_url)
+    let pool = get_db_pool(&config.database_url)
         .await
         .context("Failed to start db")?;
 
-    sqlx::migrate!("./migrations").run(&pool).await?;
-
-    let ctx = AppContext {
+    let state = AppState {
         config: Arc::new(config),
         db: pool,
     };
+    let app = app_router(state);
 
-    let addr = SocketAddrV4::new(Ipv4Addr::new(0, 0, 0, 0), ctx.config.port);
+    serve_app(app, port).await?;
 
-    let app = Router::new().route("/", get(hello)).with_state(ctx);
-
-    let listener = tokio::net::TcpListener::bind(addr)
-        .await
-        .context("Failed to bind TCP Listener")?;
-
-    println!("Listening on {}", addr);
-    axum::serve(listener, app)
-        .await
-        .context("axum::serve Failed")?;
     Ok(())
 }
