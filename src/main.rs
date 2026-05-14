@@ -1,13 +1,24 @@
+use std::sync::Arc;
+
 use anyhow::Context;
-use axum::{Json, Router, http::StatusCode, routing::get};
+use axum::{Json, Router, extract::State, http::StatusCode, routing::get};
 use clap::Parser;
 use serde::Serialize;
-use sqlx::postgres::PgPoolOptions;
+use sqlx::{PgPool, postgres::PgPoolOptions};
 
-#[derive(clap::Parser)]
+// TODO: Split main up
+
+// TODO: Add Port to config
+#[derive(Debug, clap::Parser)]
 struct Config {
-    #[clap(long, env)]
+    #[arg(long, env)]
     db_url: String,
+}
+
+#[derive(Debug, Clone)]
+struct AppContext {
+    config: Arc<Config>,
+    db: PgPool,
 }
 
 #[derive(Serialize)]
@@ -15,7 +26,9 @@ struct Response {
     message: &'static str,
 }
 
-async fn hello() -> (StatusCode, Json<Response>) {
+async fn hello(State(ctx): State<AppContext>) -> (StatusCode, Json<Response>) {
+    // TODO: Delete me!
+    println!("{}", ctx.db.size());
     let response = Response {
         message: "Hello, World!",
     };
@@ -31,7 +44,6 @@ async fn main() -> anyhow::Result<()> {
 
     let config = Config::parse();
 
-    let app = Router::new().route("/", get(hello));
     let pool = PgPoolOptions::new()
         .max_connections(5)
         .connect(&config.db_url)
@@ -39,6 +51,13 @@ async fn main() -> anyhow::Result<()> {
         .context("Failed to start db")?;
 
     sqlx::migrate!("./migrations").run(&pool).await?;
+
+    let ctx = AppContext {
+        config: Arc::new(config),
+        db: pool,
+    };
+
+    let app = Router::new().route("/", get(hello)).with_state(ctx);
 
     let listener = tokio::net::TcpListener::bind("0.0.0.0:3000")
         .await

@@ -18,3 +18,5 @@ sqlx = { version = "0.8.6", features = [
   "tls-native-tls",
 ] }
 tokio = { version = "1.52.3", features = ["full"] }
+tower = "0.5.3"
+tower-http = "0.6.10"
