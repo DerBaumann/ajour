@@ -38,6 +38,8 @@ async fn main() -> anyhow::Result<()> {
         .await
         .context("Failed to start db")?;
 
+    sqlx::migrate!("./migrations").run(&pool).await?;
+
     let listener = tokio::net::TcpListener::bind("0.0.0.0:3000")
         .await
         .context("Failed to bind TCP Listener")?;

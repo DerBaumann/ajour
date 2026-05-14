@@ -1078,20 +1078,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "order_manager_api"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "axum",
- "clap",
- "dotenvy",
- "serde",
- "serde_json",
- "sqlx",
- "tokio",
-]
-
-[[package]]
 name = "parking"
 version = "2.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1759,6 +1745,20 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn",
+]
+
+[[package]]
+name = "task_manager"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "axum",
+ "clap",
+ "dotenvy",
+ "serde",
+ "serde_json",
+ "sqlx",
+ "tokio",
 ]
 
 [[package]]
