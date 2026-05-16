@@ -10,6 +10,7 @@ use std::{
 pub mod config;
 pub mod errors;
 pub mod router;
+pub mod validators;
 
 #[derive(Debug, Clone)]
 pub struct AppState {

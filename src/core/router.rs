@@ -1,7 +1,10 @@
 use askama::Template;
 use axum::{Router, http::StatusCode, response::Html, routing::get};
 
-use crate::core::{AppState, errors::AppError};
+use crate::{
+    core::{AppState, errors::AppError},
+    tasks::router::task_routes,
+};
 
 #[derive(Template)]
 #[template(path = "index.html")]
@@ -14,5 +17,8 @@ async fn hello() -> Result<(StatusCode, Html<String>), AppError> {
 }
 
 pub fn app_router(state: AppState) -> Router {
-    Router::new().route("/", get(hello)).with_state(state)
+    Router::new()
+        .route("/", get(hello))
+        .nest("/tasks", task_routes())
+        .with_state(state)
 }

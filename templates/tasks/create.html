@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+<!---->
+{% block title %}Aufgabe erstellen{% endblock %}
+<!---->
+{% block content %}
+<h1>Neue Aufgabe</h1>
+<form action="/tasks" method="post">
+  <p><label for="name">Name</label></p>
+  <input type="text" name="name" id="name" />
+
+  <p><label for="description">Beschreibung</label></p>
+  <textarea name="description" id="description"></textarea>
+
+  <p><label for="priority">Priorität</label></p>
+  <select name="priority" id="priority">
+    <option value="" disabled default>--- Priorität ---</option>
+    <option value="very_high">Sehr Hoch</option>
+    <option value="high">Hoch</option>
+    <option value="medium">Mittel</option>
+    <option value="low">Niedrig</option>
+  </select>
+
+  <p><label for="start">Start</label></p>
+  <input type="datetime-local" name="start" id="start" />
+
+  <p><label for="deadline">Deadline</label></p>
+  <input type="datetime-local" name="deadline" id="deadline" />
+
+  <p><button type="submit">Speichern</button></p>
+</form>
+{% endblock %}
