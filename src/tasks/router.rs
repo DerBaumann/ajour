@@ -1,3 +1,4 @@
+use anyhow::Context;
 use askama::Template;
 use axum::{
     Form, Router,
@@ -5,6 +6,7 @@ use axum::{
     response::{Html, Redirect},
     routing::{get, post},
 };
+use validator::Validate;
 
 use crate::{
     core::{
@@ -26,6 +28,7 @@ async fn create(
     State(app_state): State<AppState>,
     Form(fields): Form<CreateTaskRequest>,
 ) -> Result<Redirect, AnyhowError> {
+    fields.validate().context("Invalid task data!")?;
     queries::create_task(&app_state.db, fields.into_query_params()?).await?;
     Ok(Redirect::to("/"))
 }
