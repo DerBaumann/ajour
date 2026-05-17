@@ -8,7 +8,7 @@ use axum::{
 use validator::Validate;
 
 use crate::{
-    core::{AppState, errors::AppError},
+    core::AppState,
     tasks::{
         errors::TaskError,
         models::{CreateTaskQueryParams, CreateTaskRequest},
@@ -16,18 +16,20 @@ use crate::{
     },
 };
 
+type Result<T> = std::result::Result<T, TaskError>;
+
 #[derive(Template)]
 #[template(path = "tasks/create.html")]
 struct CreateFormTemplate;
 
-async fn show_create_form() -> Result<Html<String>, AppError> {
+async fn show_create_form() -> Result<Html<String>> {
     Ok(Html(CreateFormTemplate.render()?))
 }
 
 async fn create(
     State(app_state): State<AppState>,
     Form(fields): Form<CreateTaskRequest>,
-) -> Result<Redirect, TaskError> {
+) -> Result<Redirect> {
     fields.validate()?;
     queries::create_task(&app_state.db, CreateTaskQueryParams::try_from(fields)?).await?;
     Ok(Redirect::to("/"))

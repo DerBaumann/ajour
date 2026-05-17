@@ -2,6 +2,7 @@ use sqlx::PgPool;
 
 use crate::tasks::models::{CreateTaskQueryParams, Task};
 
+// TODO: Use macro
 pub async fn create_task(db: &PgPool, task: CreateTaskQueryParams) -> Result<Task, sqlx::Error> {
     sqlx::query_as::<_, Task>(
         r#"
@@ -17,4 +18,11 @@ pub async fn create_task(db: &PgPool, task: CreateTaskQueryParams) -> Result<Tas
     .bind(task.deadline)
     .fetch_one(db)
     .await
+}
+
+// TODO: Use macro
+pub async fn fetch_all_tasks(db: &PgPool) -> Result<Vec<Task>, sqlx::Error> {
+    sqlx::query_as::<_, Task>("SELECT * FROM task")
+        .fetch_all(db)
+        .await
 }
