@@ -42,26 +42,28 @@ pub struct CreateTaskRequest {
     pub deadline: Option<String>,
 }
 
-impl CreateTaskRequest {
-    pub fn into_query_params(self) -> anyhow::Result<CreateTaskQueryParams> {
-        Ok(CreateTaskQueryParams {
-            name: self.name,
-            description: self.description.filter(|d| !d.is_empty()),
-            priority: self.priority,
-            start: PrimitiveDateTime::parse(&self.start, &Iso8601::DEFAULT)?,
-            deadline: self
-                .deadline
-                .filter(|d| !d.is_empty())
-                .map(|dt| PrimitiveDateTime::parse(&dt, &Iso8601::DEFAULT))
-                .transpose()?,
-        })
-    }
-}
-
 pub struct CreateTaskQueryParams {
     pub name: String,
     pub description: Option<String>,
     pub priority: Priority,
     pub start: PrimitiveDateTime,
     pub deadline: Option<PrimitiveDateTime>,
+}
+
+impl TryFrom<CreateTaskRequest> for CreateTaskQueryParams {
+    type Error = time::Error;
+
+    fn try_from(value: CreateTaskRequest) -> Result<Self, Self::Error> {
+        Ok(CreateTaskQueryParams {
+            name: value.name,
+            description: value.description.filter(|d| !d.is_empty()),
+            priority: value.priority,
+            start: PrimitiveDateTime::parse(&value.start, &Iso8601::DEFAULT)?,
+            deadline: value
+                .deadline
+                .filter(|d| !d.is_empty())
+                .map(|dt| PrimitiveDateTime::parse(&dt, &Iso8601::DEFAULT))
+                .transpose()?,
+        })
+    }
 }

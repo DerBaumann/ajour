@@ -1,4 +1,3 @@
-use anyhow::Context;
 use askama::Template;
 use axum::{
     Form, Router,
@@ -9,11 +8,12 @@ use axum::{
 use validator::Validate;
 
 use crate::{
-    core::{
-        AppState,
-        errors::{AnyhowError, AppError},
+    core::{AppState, errors::AppError},
+    tasks::{
+        errors::TaskError,
+        models::{CreateTaskQueryParams, CreateTaskRequest},
+        queries,
     },
-    tasks::{models::CreateTaskRequest, queries},
 };
 
 #[derive(Template)]
@@ -27,9 +27,9 @@ async fn show_create_form() -> Result<Html<String>, AppError> {
 async fn create(
     State(app_state): State<AppState>,
     Form(fields): Form<CreateTaskRequest>,
-) -> Result<Redirect, AnyhowError> {
-    fields.validate().context("Invalid task data!")?;
-    queries::create_task(&app_state.db, fields.into_query_params()?).await?;
+) -> Result<Redirect, TaskError> {
+    fields.validate()?;
+    queries::create_task(&app_state.db, CreateTaskQueryParams::try_from(fields)?).await?;
     Ok(Redirect::to("/"))
 }
 
