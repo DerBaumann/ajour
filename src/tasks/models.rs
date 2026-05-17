@@ -1,9 +1,11 @@
 use serde::{Deserialize, Serialize};
 use sqlx::prelude::FromRow;
-use time::{PrimitiveDateTime, format_description::well_known::Iso8601};
+use time::PrimitiveDateTime;
 use validator::Validate;
 
-use crate::core::validators::validate_datetime;
+use crate::core::{
+    serialization::blank_as_none, utils::parse_form_datetime, validators::validate_datetime,
+};
 
 #[derive(Debug, sqlx::Type, Serialize, Deserialize)]
 #[sqlx(type_name = "priority", rename_all = "snake_case")]
@@ -13,6 +15,26 @@ pub enum Priority {
     High,
     Medium,
     Low,
+}
+
+impl Priority {
+    pub fn to_css_class(&self) -> &'static str {
+        match self {
+            Priority::VeryHigh => "priority-high",
+            Priority::High => "priority-high",
+            Priority::Medium => "priority-medium",
+            Priority::Low => "priority-low",
+        }
+    }
+
+    pub fn to_label(&self) -> &'static str {
+        match self {
+            Priority::VeryHigh => "Sehr hoch",
+            Priority::High => "Hoch",
+            Priority::Medium => "Mittel",
+            Priority::Low => "Niedrig",
+        }
+    }
 }
 
 // TODO: Maybe add timezone in future
@@ -34,11 +56,13 @@ pub struct CreateTaskRequest {
     #[validate(length(max = 50))]
     pub name: String,
     #[validate(length(max = 300))]
+    #[serde(deserialize_with = "blank_as_none")]
     pub description: Option<String>,
     pub priority: Priority,
     #[validate(custom(function = "validate_datetime"))]
     pub start: String,
     #[validate(custom(function = "validate_datetime"))]
+    #[serde(deserialize_with = "blank_as_none")]
     pub deadline: Option<String>,
 }
 
@@ -58,11 +82,11 @@ impl TryFrom<CreateTaskRequest> for CreateTaskQueryParams {
             name: value.name,
             description: value.description.filter(|d| !d.is_empty()),
             priority: value.priority,
-            start: PrimitiveDateTime::parse(&value.start, &Iso8601::DEFAULT)?,
+            start: parse_form_datetime(&value.start)?,
             deadline: value
                 .deadline
                 .filter(|d| !d.is_empty())
-                .map(|dt| PrimitiveDateTime::parse(&dt, &Iso8601::DEFAULT))
+                .map(|dt| parse_form_datetime(&dt))
                 .transpose()?,
         })
     }

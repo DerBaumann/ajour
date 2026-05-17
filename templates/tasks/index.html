@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+<!-- Spacer for editor -->
+{% block title %}Heutige Aufgaben{% endblock %}
+<!-- Spacer for editor -->
+{% block content %}
+
+<h1 class="title is-3">Heutige Aufgaben</h1>
+
+<!-- Toolbar -->
+<form method="GET" class="toolbar">
+  <!-- Priority filter -->
+  <div class="select">
+    <select name="priority" onchange="this.form.submit()">
+      <option value="">Alle Prioritäten</option>
+      <option value="VeryHigh">Sehr hoch</option>
+      <option value="High">Hoch</option>
+      <option value="Medium">Mittel</option>
+      <option value="Low">Niedrig</option>
+    </select>
+  </div>
+
+  <!-- Sort -->
+  <div class="select">
+    <select name="sort" onchange="this.form.submit()">
+      <option value="created">Neueste</option>
+      <option value="deadline">Deadline</option>
+      <option value="priority">Priorität</option>
+    </select>
+  </div>
+
+  <a class="button is-primary" href="/tasks/create"> + Neue Aufgabe </a>
+</form>
+
+{% if tasks.is_empty() %}
+<div class="notification is-warning">Keine Aufgaben gefunden!</div>
+{% else %} {% for task in tasks %}
+
+<div class="task-card">
+  <div class="level">
+    <div class="level-left">
+      <strong>{{ task.name }}</strong>
+    </div>
+
+    <div class="level-right">
+      <span class="{{ task.priority.to_css_class() }}">
+        {{ task.priority.to_label() }}
+      </span>
+    </div>
+  </div>
+
+  {% if task.description.is_some() %}
+  <p class="task-meta">{{ task.description.as_ref().unwrap() }}</p>
+  {% endif %}
+
+  <p class="task-meta">
+    Deadline: {% match task.deadline %} {% when Some with (d) %} {{ d }} {% when
+    None %} Keine {% endmatch %}
+  </p>
+
+  <div class="buttons are-small">
+    <form method="POST" action="/tasks/{{ task.id }}/toggle">
+      <button class="button is-success is-light">✓ Done</button>
+    </form>
+
+    <form method="POST" action="/tasks/{{ task.id }}/delete">
+      <button class="button is-danger is-light">Delete</button>
+    </form>
+  </div>
+</div>
+
+{% endfor %} {% endif %} {% endblock %}
