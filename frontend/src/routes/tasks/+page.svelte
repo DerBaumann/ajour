@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
 
-	const tasks = ['Task 1', 'Task 2', 'Task 3', 'Task 4'];
+	let { data } = $props();
 </script>
 
 <main class="space-y-4">
@@ -14,10 +14,10 @@
 
 	<!-- TODO: Fetch tasks from backend -->
 	<ul>
-		{#each tasks as task (task)}
+		{#each data.tasks as task (task)}
 			<li>
 				<input class="checkbox" type="checkbox" />
-				<span>{task}</span>
+				<span>{task.name}</span>
 			</li>
 		{/each}
 	</ul>
