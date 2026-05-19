@@ -31,14 +31,6 @@ async fn show_task_list(State(app_state): State<AppState>) -> Result<Html<String
     Ok(Html(tmpl.render()?))
 }
 
-#[derive(Template)]
-#[template(path = "tasks/create.html")]
-struct CreateFormTemplate;
-
-async fn show_create_form() -> Result<Html<String>> {
-    Ok(Html(CreateFormTemplate.render()?))
-}
-
 async fn create(
     State(app_state): State<AppState>,
     Form(fields): Form<CreateTaskRequest>,
@@ -50,7 +42,5 @@ async fn create(
 }
 
 pub fn task_routes() -> Router<AppState> {
-    Router::new()
-        .route("/", get(show_task_list).post(create))
-        .route("/create", get(show_create_form))
+    Router::new().route("/", get(show_task_list).post(create))
 }

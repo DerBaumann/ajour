@@ -1,11 +1,259 @@
-<script>
+<!-- TODO: Cleanup -->
+<script lang="ts">
 	import { resolve } from '$app/paths';
+	import type { DateValue } from '@skeletonlabs/skeleton-svelte';
+	import { DatePicker, parseDate, Portal } from '@skeletonlabs/skeleton-svelte';
+
+	let startDate = $state([parseDate(new Date())]);
+	let deadline: DateValue[] = $state([]);
 </script>
 
 <h1>Neue Aufgabe</h1>
 
 <p>
-	<a href={resolve('/tasks')} class="btn preset-filled">Zurück </a>
+	<a href={resolve('/tasks')} class="btn preset-outlined-secondary-500">Zurück </a>
 </p>
 
-<form action=""></form>
+<form class="w-full max-w-md space-y-4 p-4">
+	<fieldset class="space-y-4">
+		<!-- Input -->
+		<label class="label">
+			<span class="label-text">Name</span>
+			<input class="input" type="text" required />
+		</label>
+		<!-- Textarea -->
+		<label class="label">
+			<span class="label-text">Beschreibung</span>
+			<textarea class="textarea rounded-container" rows="4" placeholder="Optionale Beschreibung"
+			></textarea>
+		</label>
+	</fieldset>
+
+	<fieldset class="space-y-2">
+		<p>Priorität</p>
+		<label class="flex items-center space-x-2">
+			<input class="radio" type="radio" checked name="priority" value="very_high" />
+			<p>Sehr hoch</p>
+		</label>
+		<label class="flex items-center space-x-2">
+			<input class="radio" type="radio" name="priority" value="high" />
+			<p>Hoch</p>
+		</label>
+		<label class="flex items-center space-x-2">
+			<input class="radio" type="radio" name="priority" value="medium" />
+			<p>Mittel</p>
+		</label>
+		<label class="flex items-center space-x-2">
+			<input class="radio" type="radio" name="priority" value="low" />
+			<p>Niedrig</p>
+		</label>
+	</fieldset>
+
+	<!-- TODO: Dynamic locale -->
+	<DatePicker
+		locale="de-CH"
+		required
+		value={startDate}
+		onValueChange={(e) => (startDate = e.value)}
+	>
+		<DatePicker.Label>Start</DatePicker.Label>
+		<DatePicker.Control>
+			<DatePicker.Input placeholder="dd.mm.yyyy" />
+			<DatePicker.Trigger />
+		</DatePicker.Control>
+		<Portal>
+			<DatePicker.Positioner>
+				<DatePicker.Content>
+					<DatePicker.View view="day">
+						<DatePicker.Context>
+							{#snippet children(datePicker)}
+								<DatePicker.ViewControl>
+									<DatePicker.PrevTrigger />
+									<DatePicker.ViewTrigger>
+										<DatePicker.RangeText />
+									</DatePicker.ViewTrigger>
+									<DatePicker.NextTrigger />
+								</DatePicker.ViewControl>
+								<DatePicker.Table>
+									<DatePicker.TableHead>
+										<DatePicker.TableRow>
+											{#each datePicker().weekDays as weekDay, id (id)}
+												<DatePicker.TableHeader>{weekDay.short}</DatePicker.TableHeader>
+											{/each}
+										</DatePicker.TableRow>
+									</DatePicker.TableHead>
+									<DatePicker.TableBody>
+										{#each datePicker().weeks as week, id (id)}
+											<DatePicker.TableRow>
+												{#each week as day, id (id)}
+													<DatePicker.TableCell value={day}>
+														<DatePicker.TableCellTrigger>{day.day}</DatePicker.TableCellTrigger>
+													</DatePicker.TableCell>
+												{/each}
+											</DatePicker.TableRow>
+										{/each}
+									</DatePicker.TableBody>
+								</DatePicker.Table>
+							{/snippet}
+						</DatePicker.Context>
+					</DatePicker.View>
+					<DatePicker.View view="month">
+						<DatePicker.Context>
+							{#snippet children(datePicker)}
+								<DatePicker.ViewControl>
+									<DatePicker.PrevTrigger />
+									<DatePicker.ViewTrigger>
+										<DatePicker.RangeText />
+									</DatePicker.ViewTrigger>
+									<DatePicker.NextTrigger />
+								</DatePicker.ViewControl>
+								<DatePicker.Table>
+									<DatePicker.TableBody>
+										{#each datePicker().getMonthsGrid( { columns: 4, format: 'short' } ) as months, id (id)}
+											<DatePicker.TableRow>
+												{#each months as month, id (id)}
+													<DatePicker.TableCell value={month.value}>
+														<DatePicker.TableCellTrigger>{month.label}</DatePicker.TableCellTrigger>
+													</DatePicker.TableCell>
+												{/each}
+											</DatePicker.TableRow>
+										{/each}
+									</DatePicker.TableBody>
+								</DatePicker.Table>
+							{/snippet}
+						</DatePicker.Context>
+					</DatePicker.View>
+					<DatePicker.View view="year">
+						<DatePicker.Context>
+							{#snippet children(datePicker)}
+								<DatePicker.ViewControl>
+									<DatePicker.PrevTrigger />
+									<DatePicker.ViewTrigger>
+										<DatePicker.RangeText />
+									</DatePicker.ViewTrigger>
+									<DatePicker.NextTrigger />
+								</DatePicker.ViewControl>
+								<DatePicker.Table>
+									<DatePicker.TableBody>
+										{#each datePicker().getYearsGrid({ columns: 4 }) as years, id (id)}
+											<DatePicker.TableRow>
+												{#each years as year, id (id)}
+													<DatePicker.TableCell value={year.value}>
+														<DatePicker.TableCellTrigger>{year.label}</DatePicker.TableCellTrigger>
+													</DatePicker.TableCell>
+												{/each}
+											</DatePicker.TableRow>
+										{/each}
+									</DatePicker.TableBody>
+								</DatePicker.Table>
+							{/snippet}
+						</DatePicker.Context>
+					</DatePicker.View>
+				</DatePicker.Content>
+			</DatePicker.Positioner>
+		</Portal>
+	</DatePicker>
+
+	<!-- TODO: Dynamic locale -->
+	<DatePicker locale="de-CH" value={deadline} onValueChange={(e) => (deadline = e.value)}>
+		<DatePicker.Label>Deadline</DatePicker.Label>
+		<DatePicker.Control>
+			<DatePicker.Input placeholder="dd.mm.yyyy" />
+			<DatePicker.Trigger />
+		</DatePicker.Control>
+		<Portal>
+			<DatePicker.Positioner>
+				<DatePicker.Content>
+					<DatePicker.View view="day">
+						<DatePicker.Context>
+							{#snippet children(datePicker)}
+								<DatePicker.ViewControl>
+									<DatePicker.PrevTrigger />
+									<DatePicker.ViewTrigger>
+										<DatePicker.RangeText />
+									</DatePicker.ViewTrigger>
+									<DatePicker.NextTrigger />
+								</DatePicker.ViewControl>
+								<DatePicker.Table>
+									<DatePicker.TableHead>
+										<DatePicker.TableRow>
+											{#each datePicker().weekDays as weekDay, id (id)}
+												<DatePicker.TableHeader>{weekDay.short}</DatePicker.TableHeader>
+											{/each}
+										</DatePicker.TableRow>
+									</DatePicker.TableHead>
+									<DatePicker.TableBody>
+										{#each datePicker().weeks as week, id (id)}
+											<DatePicker.TableRow>
+												{#each week as day, id (id)}
+													<DatePicker.TableCell value={day}>
+														<DatePicker.TableCellTrigger>{day.day}</DatePicker.TableCellTrigger>
+													</DatePicker.TableCell>
+												{/each}
+											</DatePicker.TableRow>
+										{/each}
+									</DatePicker.TableBody>
+								</DatePicker.Table>
+							{/snippet}
+						</DatePicker.Context>
+					</DatePicker.View>
+					<DatePicker.View view="month">
+						<DatePicker.Context>
+							{#snippet children(datePicker)}
+								<DatePicker.ViewControl>
+									<DatePicker.PrevTrigger />
+									<DatePicker.ViewTrigger>
+										<DatePicker.RangeText />
+									</DatePicker.ViewTrigger>
+									<DatePicker.NextTrigger />
+								</DatePicker.ViewControl>
+								<DatePicker.Table>
+									<DatePicker.TableBody>
+										{#each datePicker().getMonthsGrid( { columns: 4, format: 'short' } ) as months, id (id)}
+											<DatePicker.TableRow>
+												{#each months as month, id (id)}
+													<DatePicker.TableCell value={month.value}>
+														<DatePicker.TableCellTrigger>{month.label}</DatePicker.TableCellTrigger>
+													</DatePicker.TableCell>
+												{/each}
+											</DatePicker.TableRow>
+										{/each}
+									</DatePicker.TableBody>
+								</DatePicker.Table>
+							{/snippet}
+						</DatePicker.Context>
+					</DatePicker.View>
+					<DatePicker.View view="year">
+						<DatePicker.Context>
+							{#snippet children(datePicker)}
+								<DatePicker.ViewControl>
+									<DatePicker.PrevTrigger />
+									<DatePicker.ViewTrigger>
+										<DatePicker.RangeText />
+									</DatePicker.ViewTrigger>
+									<DatePicker.NextTrigger />
+								</DatePicker.ViewControl>
+								<DatePicker.Table>
+									<DatePicker.TableBody>
+										{#each datePicker().getYearsGrid({ columns: 4 }) as years, id (id)}
+											<DatePicker.TableRow>
+												{#each years as year, id (id)}
+													<DatePicker.TableCell value={year.value}>
+														<DatePicker.TableCellTrigger>{year.label}</DatePicker.TableCellTrigger>
+													</DatePicker.TableCell>
+												{/each}
+											</DatePicker.TableRow>
+										{/each}
+									</DatePicker.TableBody>
+								</DatePicker.Table>
+							{/snippet}
+						</DatePicker.Context>
+					</DatePicker.View>
+				</DatePicker.Content>
+			</DatePicker.Positioner>
+		</Portal>
+	</DatePicker>
+	<fieldset class="flex justify-end">
+		<button type="submit" class="btn preset-filled-primary-500">Speichern</button>
+	</fieldset>
+</form>
