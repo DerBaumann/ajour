@@ -1,10 +1,4 @@
-use askama::Template;
-use axum::{
-    Form, Router,
-    extract::State,
-    response::{Html, Redirect},
-    routing::get,
-};
+use axum::{Router, extract::State, http::StatusCode, response::Json, routing::get};
 use validator::Validate;
 
 use crate::{
@@ -18,29 +12,21 @@ use crate::{
 
 type Result<T> = std::result::Result<T, TaskError>;
 
-#[derive(Template)]
-#[template(path = "tasks/index.html")]
-struct TaskListTemplate {
-    tasks: Vec<Task>,
-}
-
-async fn show_task_list(State(app_state): State<AppState>) -> Result<Html<String>> {
+async fn fetch_all(State(app_state): State<AppState>) -> Result<Json<Vec<Task>>> {
     let tasks = queries::fetch_all_tasks(&app_state.db).await?;
-    let tmpl = TaskListTemplate { tasks };
-
-    Ok(Html(tmpl.render()?))
+    Ok(Json(tasks))
 }
 
 async fn create(
     State(app_state): State<AppState>,
-    Form(fields): Form<CreateTaskRequest>,
-) -> Result<Redirect> {
-    dbg!(&fields);
+    Json(fields): Json<CreateTaskRequest>,
+) -> Result<(StatusCode, Json<Task>)> {
     fields.validate()?;
-    queries::create_task(&app_state.db, CreateTaskQueryParams::try_from(fields)?).await?;
-    Ok(Redirect::to("/tasks"))
+    let task =
+        queries::create_task(&app_state.db, CreateTaskQueryParams::try_from(fields)?).await?;
+    Ok((StatusCode::CREATED, Json(task)))
 }
 
 pub fn task_routes() -> Router<AppState> {
-    Router::new().route("/", get(show_task_list).post(create))
+    Router::new().route("/", get(fetch_all).post(create))
 }

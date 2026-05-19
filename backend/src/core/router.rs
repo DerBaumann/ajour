@@ -1,19 +1,12 @@
-use askama::Template;
-use axum::{Router, http::StatusCode, response::Html, routing::get};
+use std::collections::HashMap;
 
-use crate::{
-    core::{AppState, errors::AppError},
-    tasks::router::task_routes,
-};
+use axum::{Json, Router, routing::get};
 
-#[derive(Template)]
-#[template(path = "index.html")]
-struct HomeTemplate;
+use crate::{core::AppState, tasks::router::task_routes};
 
-async fn hello() -> Result<(StatusCode, Html<String>), AppError> {
-    let tmpl = HomeTemplate.render()?;
-
-    Ok((StatusCode::OK, Html(tmpl)))
+async fn hello() -> Json<HashMap<&'static str, &'static str>> {
+    let res = HashMap::from([("message", "pong")]);
+    Json(res)
 }
 
 pub fn app_router(state: AppState) -> Router {

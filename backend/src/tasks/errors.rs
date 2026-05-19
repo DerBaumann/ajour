@@ -9,9 +9,6 @@ pub enum TaskError {
     Database(#[from] sqlx::Error),
 
     #[error(transparent)]
-    TemplateParsing(#[from] askama::Error),
-
-    #[error(transparent)]
     TimeParsing(#[from] time::Error),
 }
 
@@ -22,9 +19,6 @@ impl IntoResponse for TaskError {
                 (StatusCode::BAD_REQUEST, Json(validation_errors.errors())).into_response()
             }
             TaskError::Database(error) => {
-                (StatusCode::INTERNAL_SERVER_ERROR, error.to_string()).into_response()
-            }
-            TaskError::TemplateParsing(error) => {
                 (StatusCode::INTERNAL_SERVER_ERROR, error.to_string()).into_response()
             }
             TaskError::TimeParsing(error) => {

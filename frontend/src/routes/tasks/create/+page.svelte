@@ -8,7 +8,7 @@
 	let deadline: DateValue[] = $state([]);
 </script>
 
-<h1>Neue Aufgabe</h1>
+<h1 class="h1">Neue Aufgabe</h1>
 
 <p>
 	<a href={resolve('/tasks')} class="btn preset-outlined-secondary-500">Zurück </a>
