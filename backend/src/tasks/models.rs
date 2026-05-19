@@ -17,26 +17,6 @@ pub enum Priority {
     Low,
 }
 
-impl Priority {
-    pub fn to_css_class(&self) -> &'static str {
-        match self {
-            Priority::VeryHigh => "priority-high",
-            Priority::High => "priority-high",
-            Priority::Medium => "priority-medium",
-            Priority::Low => "priority-low",
-        }
-    }
-
-    pub fn to_label(&self) -> &'static str {
-        match self {
-            Priority::VeryHigh => "Sehr hoch",
-            Priority::High => "Hoch",
-            Priority::Medium => "Mittel",
-            Priority::Low => "Niedrig",
-        }
-    }
-}
-
 // TODO: Maybe add timezone in future
 #[derive(Debug, FromRow, Serialize)]
 pub struct Task {
