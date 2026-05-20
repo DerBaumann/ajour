@@ -1,0 +1,9 @@
+FROM rust:1.95
+
+WORKDIR /app
+
+RUN cargo install cargo-watch
+
+EXPOSE 8080
+
+CMD ["cargo", "watch", "-x", "run"]
