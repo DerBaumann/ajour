@@ -11,31 +11,32 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql
 
-  api:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile.dev
-    ports:
-      - 8080:8080
-    environment:
-      - DATABASE_URL=postgresql://dbuser:secret@db:5432/order_manager
-    volumes:
-      - ./backend/:/app
-    depends_on:
-      - db
-
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile.dev
-    volumes:
-      - ./frontend/:/app
-    ports:
-      - 5173:5173
-    environment:
-      - API_URL="http://api:8080"
-    depends_on:
-      - api
+  # api:
+  #   build:
+  #     context: ./backend
+  #     dockerfile: Dockerfile.dev
+  #   ports:
+  #     - 8080:8080
+  #   environment:
+  #     - DATABASE_URL=postgresql://dbuser:secret@db:5432/order_manager
+  #     - RUST_LOG=tower_http=debug
+  #   volumes:
+  #     - ./backend/:/app
+  #   depends_on:
+  #     - db
+  #
+  # frontend:
+  #   build:
+  #     context: ./frontend
+  #     dockerfile: Dockerfile.dev
+  #   volumes:
+  #     - ./frontend/:/app
+  #   ports:
+  #     - 5173:5173
+  #   environment:
+  #     - API_URL=http://api:8080
+  #   depends_on:
+  #     - api
 
 volumes:
   pgdata:

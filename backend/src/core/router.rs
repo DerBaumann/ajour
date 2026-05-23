@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 
 use axum::{Json, Router, routing::get};
+use tower_http::trace::TraceLayer;
 
 use crate::{core::AppState, tasks::router::task_routes};
 
@@ -14,4 +15,5 @@ pub fn app_router(state: AppState) -> Router {
         .route("/", get(hello))
         .nest("/tasks", task_routes())
         .with_state(state)
+        .layer(TraceLayer::new_for_http())
 }

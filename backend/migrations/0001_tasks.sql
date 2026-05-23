@@ -6,8 +6,8 @@ CREATE TABLE task (
   description text,
   completed bool NOT NULL DEFAULT false,
   priority priority NOT NULL,
-  start timestamp NOT NULL,
-  deadline timestamp,
-  archived_at timestamp,
-  created_at timestamp NOT NULL DEFAULT now()
+  start date NOT NULL,
+  deadline date,
+  archived_at timestamptz,
+  created_at timestamptz NOT NULL DEFAULT now()
 );

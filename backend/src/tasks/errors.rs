@@ -1,4 +1,4 @@
-use axum::{Json, http::StatusCode, response::IntoResponse};
+use axum::{http::StatusCode, response::IntoResponse};
 
 #[derive(Debug, thiserror::Error)]
 pub enum TaskError {
@@ -14,16 +14,23 @@ pub enum TaskError {
 
 impl IntoResponse for TaskError {
     fn into_response(self) -> axum::response::Response {
-        match self {
+        match &self {
             TaskError::Validation(validation_errors) => {
-                (StatusCode::BAD_REQUEST, Json(validation_errors.errors())).into_response()
+                tracing::error!(?validation_errors, "validation_errors");
             }
             TaskError::Database(error) => {
-                (StatusCode::INTERNAL_SERVER_ERROR, error.to_string()).into_response()
+                tracing::error!(?error, "database error");
             }
             TaskError::TimeParsing(error) => {
-                (StatusCode::BAD_REQUEST, error.to_string()).into_response()
+                tracing::error!(?error, "time error");
             }
-        }
+        };
+
+        let status = match &self {
+            TaskError::Validation(_) | TaskError::TimeParsing(_) => StatusCode::BAD_REQUEST,
+            TaskError::Database(_) => StatusCode::INTERNAL_SERVER_ERROR,
+        };
+
+        (status, self.to_string()).into_response()
     }
 }

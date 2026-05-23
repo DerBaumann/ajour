@@ -4,8 +4,20 @@
 	import type { DateValue } from '@skeletonlabs/skeleton-svelte';
 	import { DatePicker, parseDate, Portal } from '@skeletonlabs/skeleton-svelte';
 
-	let startDate = $state([parseDate(new Date())]);
+	let start: DateValue[] = $state([parseDate(new Date())]);
 	let deadline: DateValue[] = $state([]);
+	// let locale = $state('');
+	//
+	// onMount(() => {
+	// 	locale = navigator.language;
+	// });
+
+	function toApiDate(date: DateValue): string {
+		const year = date.year;
+		const month = String(date.month).padStart(2, '0');
+		const day = String(date.day).padStart(2, '0');
+		return `${year}-${month}-${day}`;
+	}
 </script>
 
 <h1 class="h1">Neue Aufgabe</h1>
@@ -14,17 +26,21 @@
 	<a href={resolve('/tasks')} class="btn preset-outlined-secondary-500">Zurück </a>
 </p>
 
-<form class="w-full max-w-md space-y-4 p-4">
+<form class="w-full max-w-md space-y-4 p-4" method="POST">
 	<fieldset class="space-y-4">
 		<!-- Input -->
 		<label class="label">
 			<span class="label-text">Name</span>
-			<input class="input" type="text" required />
+			<input class="input" type="text" name="name" required />
 		</label>
 		<!-- Textarea -->
 		<label class="label">
 			<span class="label-text">Beschreibung</span>
-			<textarea class="textarea rounded-container" rows="4" placeholder="Optionale Beschreibung"
+			<textarea
+				class="textarea rounded-container"
+				rows="4"
+				placeholder="Optionale Beschreibung"
+				name="description"
 			></textarea>
 		</label>
 	</fieldset>
@@ -50,15 +66,10 @@
 	</fieldset>
 
 	<!-- TODO: Dynamic locale -->
-	<DatePicker
-		locale="de-CH"
-		required
-		value={startDate}
-		onValueChange={(e) => (startDate = e.value)}
-	>
+	<DatePicker required value={start} onValueChange={(e) => (start = e.value)}>
 		<DatePicker.Label>Start</DatePicker.Label>
 		<DatePicker.Control>
-			<DatePicker.Input placeholder="dd.mm.yyyy" />
+			<DatePicker.Input placeholder="yyyy-mm-dd" />
 			<DatePicker.Trigger />
 		</DatePicker.Control>
 		<Portal>
@@ -153,12 +164,15 @@
 			</DatePicker.Positioner>
 		</Portal>
 	</DatePicker>
+	{#if start?.[0]}
+		<input type="hidden" name="start" value={toApiDate(start[0])} />
+	{/if}
 
 	<!-- TODO: Dynamic locale -->
-	<DatePicker locale="de-CH" value={deadline} onValueChange={(e) => (deadline = e.value)}>
+	<DatePicker value={deadline} onValueChange={(e) => (deadline = e.value)}>
 		<DatePicker.Label>Deadline</DatePicker.Label>
 		<DatePicker.Control>
-			<DatePicker.Input placeholder="dd.mm.yyyy" />
+			<DatePicker.Input placeholder="yyyy-mm-dd" />
 			<DatePicker.Trigger />
 		</DatePicker.Control>
 		<Portal>
@@ -253,6 +267,10 @@
 			</DatePicker.Positioner>
 		</Portal>
 	</DatePicker>
+	{#if deadline?.[0]}
+		<input type="hidden" name="deadline" value={toApiDate(deadline[0])} />
+	{/if}
+
 	<fieldset class="flex justify-end">
 		<button type="submit" class="btn preset-filled-primary-500">Speichern</button>
 	</fieldset>

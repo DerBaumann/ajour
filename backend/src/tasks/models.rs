@@ -1,11 +1,9 @@
 use serde::{Deserialize, Serialize};
 use sqlx::prelude::FromRow;
-use time::PrimitiveDateTime;
+use time::{Date, OffsetDateTime};
 use validator::Validate;
 
-use crate::core::{
-    serialization::blank_as_none, utils::parse_form_datetime, validators::validate_datetime,
-};
+use crate::core::serialization::blank_as_none;
 
 #[derive(Debug, sqlx::Type, Serialize, Deserialize)]
 #[sqlx(type_name = "priority", rename_all = "snake_case")]
@@ -25,10 +23,10 @@ pub struct Task {
     pub description: Option<String>,
     pub completed: bool,
     pub priority: Priority,
-    pub start: PrimitiveDateTime,
-    pub deadline: Option<PrimitiveDateTime>,
-    pub archived_at: Option<PrimitiveDateTime>,
-    pub created_at: PrimitiveDateTime,
+    pub start: Date,
+    pub deadline: Option<Date>,
+    pub archived_at: Option<OffsetDateTime>,
+    pub created_at: OffsetDateTime,
 }
 
 #[derive(Debug, Deserialize, Validate)]
@@ -39,35 +37,41 @@ pub struct CreateTaskRequest {
     #[serde(deserialize_with = "blank_as_none")]
     pub description: Option<String>,
     pub priority: Priority,
-    #[validate(custom(function = "validate_datetime"))]
-    pub start: String,
-    #[validate(custom(function = "validate_datetime"))]
-    #[serde(deserialize_with = "blank_as_none")]
-    pub deadline: Option<String>,
+    // #[validate(custom(function = "validate_datetime"))]
+    // pub start: String,
+    pub start: Date,
+    // #[validate(custom(function = "validate_datetime"))]
+    // #[serde(deserialize_with = "blank_as_none")]
+    // pub deadline: Option<String>,
+    pub deadline: Option<Date>,
 }
-
-pub struct CreateTaskQueryParams {
-    pub name: String,
-    pub description: Option<String>,
-    pub priority: Priority,
-    pub start: PrimitiveDateTime,
-    pub deadline: Option<PrimitiveDateTime>,
-}
-
-impl TryFrom<CreateTaskRequest> for CreateTaskQueryParams {
-    type Error = time::Error;
-
-    fn try_from(value: CreateTaskRequest) -> Result<Self, Self::Error> {
-        Ok(CreateTaskQueryParams {
-            name: value.name,
-            description: value.description.filter(|d| !d.is_empty()),
-            priority: value.priority,
-            start: parse_form_datetime(&value.start)?,
-            deadline: value
-                .deadline
-                .filter(|d| !d.is_empty())
-                .map(|dt| parse_form_datetime(&dt))
-                .transpose()?,
-        })
-    }
-}
+//
+// pub struct CreateTaskQueryParams {
+//     pub name: String,
+//     pub description: Option<String>,
+//     pub priority: Priority,
+//     pub start: PrimitiveDateTime,
+//     pub deadline: Option<PrimitiveDateTime>,
+// }
+//
+// impl TryFrom<CreateTaskRequest> for CreateTaskQueryParams {
+//     type Error = time::Error;
+//
+//     fn try_from(value: CreateTaskRequest) -> Result<Self, Self::Error> {
+//         Ok(CreateTaskQueryParams {
+//             name: value.name,
+//             description: value.description.filter(|d| !d.is_empty()),
+//             priority: value.priority,
+//             start: PrimitiveDateTime::new(value.start, Time::MIDNIGHT),
+//             deadline: value
+//                 .deadline
+//                 .map(|d| PrimitiveDateTime::new(d, Time::MIDNIGHT)),
+//             // start: parse_form_datetime(&value.start)?,
+//             // deadline: value
+//             //     .deadline
+//             //     .filter(|d| !d.is_empty())
+//             //     .map(|d| parse_form_datetime(&d))
+//             //     .transpose()?,
+//         })
+//     }
+// }

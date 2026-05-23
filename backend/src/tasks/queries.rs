@@ -1,9 +1,9 @@
 use sqlx::PgPool;
 
-use crate::tasks::models::{CreateTaskQueryParams, Task};
+use crate::tasks::models::{CreateTaskRequest, Task};
 
 // TODO: Use macro
-pub async fn create_task(db: &PgPool, task: CreateTaskQueryParams) -> Result<Task, sqlx::Error> {
+pub async fn create_task(db: &PgPool, task: CreateTaskRequest) -> Result<Task, sqlx::Error> {
     sqlx::query_as::<_, Task>(
         r#"
         INSERT INTO task (name, description, priority, start, deadline)
