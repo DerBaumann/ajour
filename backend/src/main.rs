@@ -2,8 +2,9 @@ use std::sync::Arc;
 
 use anyhow::Context;
 use clap::Parser;
-use task_manager::core::{AppState, config::Config, get_db_pool, router::app_router, serve_app};
-use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
+use task_manager::core::{
+    AppState, config::Config, get_db_pool, log::setup_logging, router::app_router, serve_app,
+};
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
@@ -11,17 +12,7 @@ async fn main() -> anyhow::Result<()> {
     // since we're not going to use a `.env` file if we deploy this application.
     dotenvy::dotenv().ok();
 
-    // env_logger::init();
-    tracing_subscriber::registry()
-        .with(
-            tracing_subscriber::EnvFilter::try_from_default_env()
-                .unwrap_or_else(|_| "info,tower_http=debug".into()),
-        )
-        .with(tracing_subscriber::fmt::layer().pretty())
-        .init();
-    std::panic::set_hook(Box::new(|panic_info| {
-        tracing::error!("panic: {:?}", panic_info)
-    }));
+    setup_logging();
 
     let config = Config::parse();
     let port = config.port;

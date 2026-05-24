@@ -12,6 +12,7 @@ pub enum TaskError {
     TimeParsing(#[from] time::Error),
 }
 
+// TODO: Json Errors
 impl IntoResponse for TaskError {
     fn into_response(self) -> axum::response::Response {
         match &self {

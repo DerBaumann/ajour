@@ -3,14 +3,14 @@ import z from 'zod';
 export const Priority = z.enum(['very_high', 'high', 'medium', 'low']);
 export type Priority = z.infer<typeof Priority>;
 
-export const CreateTaskRequest = z.object({
+export const CreateTask = z.object({
 	name: z.string().max(50),
 	description: z.string().max(300).optional(),
 	priority: Priority,
 	start: z.string(),
 	deadline: z.string().optional()
 });
-export type CreateTaskRequest = z.infer<typeof CreateTaskRequest>;
+export type CreateTask = z.infer<typeof CreateTask>;
 
 export const Task = z.object({
 	id: z.number(),

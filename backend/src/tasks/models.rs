@@ -30,48 +30,13 @@ pub struct Task {
 }
 
 #[derive(Debug, Deserialize, Validate)]
-pub struct CreateTaskRequest {
+pub struct CreateTask {
     #[validate(length(max = 50))]
     pub name: String,
     #[validate(length(max = 300))]
     #[serde(deserialize_with = "blank_as_none")]
     pub description: Option<String>,
     pub priority: Priority,
-    // #[validate(custom(function = "validate_datetime"))]
-    // pub start: String,
     pub start: Date,
-    // #[validate(custom(function = "validate_datetime"))]
-    // #[serde(deserialize_with = "blank_as_none")]
-    // pub deadline: Option<String>,
     pub deadline: Option<Date>,
 }
-//
-// pub struct CreateTaskQueryParams {
-//     pub name: String,
-//     pub description: Option<String>,
-//     pub priority: Priority,
-//     pub start: PrimitiveDateTime,
-//     pub deadline: Option<PrimitiveDateTime>,
-// }
-//
-// impl TryFrom<CreateTaskRequest> for CreateTaskQueryParams {
-//     type Error = time::Error;
-//
-//     fn try_from(value: CreateTaskRequest) -> Result<Self, Self::Error> {
-//         Ok(CreateTaskQueryParams {
-//             name: value.name,
-//             description: value.description.filter(|d| !d.is_empty()),
-//             priority: value.priority,
-//             start: PrimitiveDateTime::new(value.start, Time::MIDNIGHT),
-//             deadline: value
-//                 .deadline
-//                 .map(|d| PrimitiveDateTime::new(d, Time::MIDNIGHT)),
-//             // start: parse_form_datetime(&value.start)?,
-//             // deadline: value
-//             //     .deadline
-//             //     .filter(|d| !d.is_empty())
-//             //     .map(|d| parse_form_datetime(&d))
-//             //     .transpose()?,
-//         })
-//     }
-// }

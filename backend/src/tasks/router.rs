@@ -5,7 +5,7 @@ use crate::{
     core::AppState,
     tasks::{
         errors::TaskError,
-        models::{CreateTaskRequest, Task},
+        models::{CreateTask, Task},
         queries,
     },
 };
@@ -19,10 +19,12 @@ async fn fetch_all(State(app_state): State<AppState>) -> Result<Json<Vec<Task>>>
     Ok(Json(tasks))
 }
 
+// TODO: Fetch current task endpoint
+
 #[tracing::instrument(skip(app_state))]
 async fn create(
     State(app_state): State<AppState>,
-    Json(fields): Json<CreateTaskRequest>,
+    Json(fields): Json<CreateTask>,
 ) -> Result<(StatusCode, Json<Task>)> {
     tracing::debug!(?fields);
     fields.validate()?;
