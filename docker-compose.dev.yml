@@ -7,7 +7,7 @@ services:
     environment:
       - POSTGRES_USER=dbuser
       - POSTGRES_PASSWORD=secret
-      - POSTGRES_DB=order_manager
+      - POSTGRES_DB=ajour
     volumes:
       - pgdata:/var/lib/postgresql
 
@@ -18,7 +18,7 @@ services:
   #   ports:
   #     - 8080:8080
   #   environment:
-  #     - DATABASE_URL=postgresql://dbuser:secret@db:5432/order_manager
+  #     - DATABASE_URL=postgresql://dbuser:secret@db:5432/ajour
   #     - RUST_LOG=tower_http=debug
   #   volumes:
   #     - ./backend/:/app

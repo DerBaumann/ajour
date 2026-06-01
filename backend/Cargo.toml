@@ -1,5 +1,5 @@
 [package]
-name = "task_manager"
+name = "ajour"
 version = "0.1.0"
 edition = "2024"
 
@@ -20,7 +20,11 @@ sqlx = { version = "0.8.6", features = [
   "time",
 ] }
 thiserror = "2.0.18"
-time = { version = "0.3.47", features = ["parsing", "serde", "serde-human-readable"] }
+time = { version = "0.3.47", features = [
+  "parsing",
+  "serde",
+  "serde-human-readable",
+] }
 tokio = { version = "1.52.3", features = ["full"] }
 tower = "0.5.3"
 tower-http = { version = "0.6.10", features = ["trace"] }
