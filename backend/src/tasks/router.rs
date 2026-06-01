@@ -6,12 +6,13 @@ use crate::{
     tasks::{
         errors::TaskError,
         models::{CreateTask, Task},
-        queries,
+        queries::{self},
     },
 };
 
 type Result<T> = std::result::Result<T, TaskError>;
 
+#[axum::debug_handler]
 #[tracing::instrument(skip(app_state))]
 async fn fetch_all(State(app_state): State<AppState>) -> Result<Json<Vec<Task>>> {
     let tasks = queries::fetch_all_tasks(&app_state.db).await?;
@@ -19,7 +20,13 @@ async fn fetch_all(State(app_state): State<AppState>) -> Result<Json<Vec<Task>>>
     Ok(Json(tasks))
 }
 
-// TODO: Fetch current task endpoint
+#[axum::debug_handler]
+#[tracing::instrument(skip(app_state))]
+async fn fetch_current(State(app_state): State<AppState>) -> Result<Json<Vec<Task>>> {
+    let tasks = queries::fetch_current_tasks(&app_state.db).await?;
+    tracing::debug!(?tasks);
+    Ok(Json(tasks))
+}
 
 #[tracing::instrument(skip(app_state))]
 async fn create(
@@ -34,5 +41,7 @@ async fn create(
 }
 
 pub fn task_routes() -> Router<AppState> {
-    Router::new().route("/", get(fetch_all).post(create))
+    Router::new()
+        .route("/", get(fetch_all).post(create))
+        .route("/current", get(fetch_current))
 }

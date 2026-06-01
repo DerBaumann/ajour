@@ -34,7 +34,7 @@
 	</fieldset>
 
 	<!-- TODO: Dynamic locale -->
-	<DatePicker label="Start" value={[parseDate(new Date())]} />
+	<DatePicker required label="Start" value={[parseDate(new Date())]} />
 	<DatePicker label="Deadline" />
 
 	<fieldset class="flex justify-end">

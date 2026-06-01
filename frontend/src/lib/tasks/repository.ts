@@ -13,6 +13,17 @@ export async function fetchAllTasks(): Promise<Result<Task[], string>> {
 	return ok(tasks);
 }
 
+export async function fetchCurrentTasks(): Promise<Result<Task[], string>> {
+	const res = await fetch(`${API_URL}/tasks/current`);
+	if (!res.ok) {
+		const e = await res.text();
+		console.error(e);
+		return err(e);
+	}
+	const tasks = await res.json();
+	return ok(tasks);
+}
+
 export async function createTask(task: CreateTask): Promise<Result<Task, string>> {
 	const res = await fetch(`${API_URL}/tasks`, {
 		method: 'POST',

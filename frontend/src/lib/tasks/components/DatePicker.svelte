@@ -5,9 +5,10 @@
 		label: string;
 		value?: DateValue[];
 		placeholder?: string;
+		required?: boolean;
 	}
 
-	let { value = [], label, placeholder = 'yyyy-mm-dd' }: Props = $props();
+	let { value = [], required = false, label, placeholder = 'yyyy-mm-dd' }: Props = $props();
 
 	// let locale = $state('');
 	//
@@ -24,7 +25,7 @@
 </script>
 
 <!-- TODO: Dynamic locale -->
-<DatePicker required {value} onValueChange={(e) => (value = e.value)}>
+<DatePicker {required} {value} onValueChange={(e) => (value = e.value)}>
 	<DatePicker.Label>{label}</DatePicker.Label>
 	<DatePicker.Control>
 		<DatePicker.Input {placeholder} />

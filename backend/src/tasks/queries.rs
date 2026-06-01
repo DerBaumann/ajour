@@ -26,3 +26,9 @@ pub async fn fetch_all_tasks(db: &PgPool) -> Result<Vec<Task>, sqlx::Error> {
         .fetch_all(db)
         .await
 }
+
+pub async fn fetch_current_tasks(db: &PgPool) -> Result<Vec<Task>, sqlx::Error> {
+    sqlx::query_as::<_, Task>("SELECT * FROM task WHERE start <= CURRENT_DATE")
+        .fetch_all(db)
+        .await
+}
