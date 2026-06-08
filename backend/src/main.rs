@@ -1,10 +1,10 @@
 use std::sync::Arc;
 
-use anyhow::Context;
-use clap::Parser;
-use task_manager::core::{
+use ajour::core::{
     AppState, config::Config, get_db_pool, log::setup_logging, router::app_router, serve_app,
 };
+use anyhow::Context;
+use clap::Parser;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
