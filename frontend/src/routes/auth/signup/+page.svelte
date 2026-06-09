@@ -1,6 +1,9 @@
 <!-- TODO: Implement Signup -->
 <script lang="ts">
 	import Input from '$lib/components/Input.svelte';
+	import type { ActionData } from './$types';
+
+	const { form }: { form: ActionData } = $props();
 </script>
 
 <h1 class="h1">Registrierung</h1>
@@ -13,3 +16,5 @@
 
 	<button type="submit" class="btn preset-filled-primary-500">Registrieren</button>
 </form>
+
+<p class="text-error-500">Error: {form?.message}</p>
