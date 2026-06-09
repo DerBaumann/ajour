@@ -11,3 +11,9 @@ export const RegistrationCreds = z
 		error: 'Passwords dont match'
 	});
 export type RegistrationCreds = z.infer<typeof RegistrationCreds>;
+
+export const LoginCreds = z.object({
+	email: z.email(),
+	password: z.string()
+});
+export type LoginCreds = z.infer<typeof LoginCreds>;
