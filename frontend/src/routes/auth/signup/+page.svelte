@@ -9,7 +9,7 @@
 	<Input type="text" label="Nutzername" name="name" required />
 	<Input type="email" label="Email" name="email" placeholder="you@example.com" required />
 	<Input type="password" label="Passwort" name="password" required />
-	<Input type="password" label="Passwort wiederholen" name="password-repeat" required />
+	<Input type="password" label="Passwort wiederholen" name="passwordRepeat" required />
 
 	<button type="submit" class="btn preset-filled-primary-500">Registrieren</button>
 </form>
