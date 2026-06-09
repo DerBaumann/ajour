@@ -1,4 +1,4 @@
-import { createTask } from '$lib/tasks/repository';
+import { createTask } from '$lib/tasks/repository.server';
 import { CreateTask } from '$lib/tasks/types.js';
 import { error, fail, redirect } from '@sveltejs/kit';
 

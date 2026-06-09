@@ -1,10 +1,10 @@
 <!-- TODO: Cleanup -->
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import DatePicker from '$lib/tasks/components/DatePicker.svelte';
-	import Input from '$lib/tasks/components/Input.svelte';
-	import RadioButton from '$lib/tasks/components/RadioButton.svelte';
-	import Textarea from '$lib/tasks/components/Textarea.svelte';
+	import DatePicker from '$lib/components/DatePicker.svelte';
+	import Input from '$lib/components/Input.svelte';
+	import RadioButton from '$lib/components/RadioButton.svelte';
+	import Textarea from '$lib/components/Textarea.svelte';
 	import { parseDate } from '@skeletonlabs/skeleton-svelte';
 </script>
 
