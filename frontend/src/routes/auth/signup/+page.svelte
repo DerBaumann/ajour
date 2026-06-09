@@ -1,4 +1,3 @@
-<!-- TODO: Implement Signup -->
 <script lang="ts">
 	import Input from '$lib/components/Input.svelte';
 	import type { ActionData } from './$types';
