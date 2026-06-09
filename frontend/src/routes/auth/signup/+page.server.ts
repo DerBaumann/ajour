@@ -1,8 +1,16 @@
 import { RegistrationCreds } from '$lib/auth/types';
 import { fail, redirect } from '@sveltejs/kit';
-import type { Actions } from './$types';
-import { authClient } from '$lib/auth-client';
+import type { Actions, PageServerLoad } from './$types';
 import { APIError } from 'better-auth';
+import { auth } from '$lib/server/auth';
+
+export const load: PageServerLoad = (event) => {
+	if (event.locals.user) {
+		return redirect(302, '/auth/protected');
+	}
+
+	return {};
+};
 
 export const actions: Actions = {
 	default: async ({ request }) => {
@@ -15,14 +23,23 @@ export const actions: Actions = {
 		const { name, email, password } = registrationCreds;
 
 		try {
-			await authClient.signUp.email({ name, email, password });
+			await auth.api.signUpEmail({
+				body: {
+					email,
+					password,
+					name,
+					callbackURL: '/auth/verification-success'
+				}
+			});
 		} catch (error) {
 			if (error instanceof APIError) {
 				return fail(400, { message: error.message || 'Registration failed' });
 			}
+			// return fail(500, { message: `Unexpected error: ${error.message}` });
 			return fail(500, { message: 'Unexpected error' });
 		}
 
-		redirect(303, '/tasks');
+		// TODO: Change this later to /tasks
+		redirect(303, '/auth/protected');
 	}
 };

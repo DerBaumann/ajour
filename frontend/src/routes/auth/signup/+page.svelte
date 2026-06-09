@@ -17,4 +17,6 @@
 	<button type="submit" class="btn preset-filled-primary-500">Registrieren</button>
 </form>
 
-<p class="text-error-500">Error: {form?.message}</p>
+{#if form?.message}
+	<p class="text-error-500">Error: {form?.message}</p>
+{/if}
