@@ -1,9 +1,8 @@
 import type { CreateTask, Task } from './types';
-import { API_URL } from '$env/static/private';
 import { err, ok, type Result } from 'neverthrow';
 
-export async function fetchAllTasks(): Promise<Result<Task[], string>> {
-	const res = await fetch(`${API_URL}/tasks`);
+export async function fetchAllTasks(fetchFn: typeof fetch): Promise<Result<Task[], string>> {
+	const res = await fetchFn('api/tasks');
 	if (!res.ok) {
 		const e = await res.text();
 		console.error(e);
@@ -13,8 +12,8 @@ export async function fetchAllTasks(): Promise<Result<Task[], string>> {
 	return ok(tasks);
 }
 
-export async function fetchCurrentTasks(): Promise<Result<Task[], string>> {
-	const res = await fetch(`${API_URL}/tasks/current`);
+export async function fetchCurrentTasks(fetchFn: typeof fetch): Promise<Result<Task[], string>> {
+	const res = await fetchFn('/api/tasks/current');
 	if (!res.ok) {
 		const e = await res.text();
 		console.error(e);
@@ -24,8 +23,11 @@ export async function fetchCurrentTasks(): Promise<Result<Task[], string>> {
 	return ok(tasks);
 }
 
-export async function createTask(task: CreateTask): Promise<Result<Task, string>> {
-	const res = await fetch(`${API_URL}/tasks`, {
+export async function createTask(
+	fetchFn: typeof fetch,
+	task: CreateTask
+): Promise<Result<Task, string>> {
+	const res = await fetchFn('/api/tasks', {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json'

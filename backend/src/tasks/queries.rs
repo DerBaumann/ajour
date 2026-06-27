@@ -1,34 +1,76 @@
 use sqlx::PgPool;
 
-use crate::tasks::models::{CreateTask, Task};
+use crate::tasks::models::{CreateTask, Priority, Task};
 
-// TODO: Use macro
-pub async fn create_task(db: &PgPool, task: CreateTask) -> Result<Task, sqlx::Error> {
-    sqlx::query_as::<_, Task>(
+// TODO: Format Query sql
+
+pub async fn create_task(
+    db: &PgPool,
+    task: CreateTask,
+    user_id: &str,
+) -> Result<Task, sqlx::Error> {
+    sqlx::query_as!(
+        Task,
         r#"
-        INSERT INTO task (name, description, priority, start, deadline)
-        VALUES ($1, $2, $3, $4, $5)
-        RETURNING *
+        INSERT INTO task (name, description, priority, start, deadline, user_id)
+        VALUES ($1, $2, $3::priority, $4, $5, $6)
+        RETURNING
+            id,
+            name,
+            description,
+            completed,
+            priority as "priority: Priority",
+            start,
+            deadline,
+            user_id,
+            archived_at,
+            created_at
         "#,
+        task.name,
+        task.description,
+        task.priority as Priority,
+        task.start,
+        task.deadline,
+        user_id
     )
-    .bind(task.name)
-    .bind(task.description)
-    .bind(task.priority)
-    .bind(task.start)
-    .bind(task.deadline)
     .fetch_one(db)
     .await
 }
 
-// TODO: Use macro
-pub async fn fetch_all_tasks(db: &PgPool) -> Result<Vec<Task>, sqlx::Error> {
-    sqlx::query_as::<_, Task>("SELECT * FROM task")
-        .fetch_all(db)
-        .await
+pub async fn fetch_all_tasks(db: &PgPool, user_id: &str) -> Result<Vec<Task>, sqlx::Error> {
+    sqlx::query_as!(
+        Task,
+        r#"SELECT id,
+            name,
+            description,
+            completed,
+            priority as "priority: Priority",
+            start,
+            deadline,
+            user_id,
+            archived_at,
+            created_at FROM task WHERE user_id = $1"#,
+        user_id
+    )
+    .fetch_all(db)
+    .await
 }
 
-pub async fn fetch_current_tasks(db: &PgPool) -> Result<Vec<Task>, sqlx::Error> {
-    sqlx::query_as::<_, Task>("SELECT * FROM task WHERE start <= CURRENT_DATE")
-        .fetch_all(db)
-        .await
+pub async fn fetch_current_tasks(db: &PgPool, user_id: &str) -> Result<Vec<Task>, sqlx::Error> {
+    sqlx::query_as!(
+        Task,
+        r#"SELECT id,
+            name,
+            description,
+            completed,
+            priority as "priority: Priority",
+            start,
+            deadline,
+            user_id,
+            archived_at,
+            created_at FROM task WHERE user_id = $1 AND start <= CURRENT_DATE"#,
+        user_id
+    )
+    .fetch_all(db)
+    .await
 }

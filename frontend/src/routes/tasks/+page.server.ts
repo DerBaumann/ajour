@@ -1,11 +1,20 @@
-import { fetchCurrentTasks } from '$lib/tasks/repository';
-import { error } from '@sveltejs/kit';
+import { error, redirect } from '@sveltejs/kit';
 
-export async function load() {
+export async function load({ locals, fetch }) {
+	if (!locals.user) {
+		return redirect(302, '/auth/signin');
+	}
+
+	const res = await fetch('/api/tasks/current');
+	if (!res.ok) {
+		const e = await res.text();
+		console.error(e);
+		error(500, { message: e });
+	}
+	const tasks = await res.json();
+
 	return {
-		tasks: (await fetchCurrentTasks()).match(
-			(tasks) => tasks,
-			(e) => error(500, { message: e })
-		)
+		user: locals.user,
+		tasks
 	};
 }

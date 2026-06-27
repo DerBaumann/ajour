@@ -25,6 +25,7 @@ pub struct Task {
     pub priority: Priority,
     pub start: Date,
     pub deadline: Option<Date>,
+    pub user_id: String,
     pub archived_at: Option<OffsetDateTime>,
     pub created_at: OffsetDateTime,
 }

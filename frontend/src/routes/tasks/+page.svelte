@@ -12,7 +12,6 @@
 		<a href={resolve('/tasks/create')} class="btn preset-filled-secondary-500">Neue Aufgabe</a>
 	</div>
 
-	<!-- TODO: Fetch tasks from backend -->
 	<ul>
 		{#each data.tasks as task (task)}
 			<li>
