@@ -13,6 +13,7 @@
 	<Navigation.Header />
 	<Navigation.Content>
 		<Navigation.Menu>
+			<p class="mr-16 h4">Ajour</p>
 			{#if !data.user}
 				<Navigation.TriggerAnchor href="/auth/signin" class="btn preset-filled">
 					<Navigation.TriggerText class="text-lg">Login</Navigation.TriggerText>
