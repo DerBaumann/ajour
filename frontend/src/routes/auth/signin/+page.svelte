@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { enhance } from '$app/forms';
 	import Input from '$lib/components/Input.svelte';
 	import type { ActionData } from './$types';
 
@@ -7,7 +8,7 @@
 
 <h1 class="h1">Login</h1>
 
-<form class="w-full max-w-md space-y-4 p-4" method="POST">
+<form class="w-full max-w-md space-y-4 p-4" method="POST" use:enhance>
 	<Input type="email" label="Email" name="email" placeholder="you@example.com" required />
 	<Input type="password" label="Passwort" name="password" required />
 
