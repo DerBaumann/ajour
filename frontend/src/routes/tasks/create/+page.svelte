@@ -1,4 +1,3 @@
-<!-- TODO: Cleanup -->
 <script lang="ts">
 	import { resolve } from '$app/paths';
 	import DatePicker from '$lib/components/DatePicker.svelte';

@@ -39,7 +39,6 @@ export const actions: Actions = {
 			return fail(500, { message: 'Unexpected error' });
 		}
 
-		// TODO: Change this later to /tasks
-		redirect(303, '/auth/protected');
+		redirect(303, '/tasks');
 	}
 };
