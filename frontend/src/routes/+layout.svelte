@@ -2,7 +2,6 @@
 	import './layout.css';
 	import favicon from '$lib/assets/favicon.svg';
 	import { Navigation } from '@skeletonlabs/skeleton-svelte';
-	import { enhance } from '$app/forms';
 	import type { LayoutProps } from './$types';
 	import { authClient } from '$lib/auth-client';
 	import { goto, invalidateAll } from '$app/navigation';
@@ -40,9 +39,6 @@
 				<Navigation.TriggerAnchor href="/tasks" class="btn preset-filled">
 					<Navigation.TriggerText class="text-lg">Heutige Aufgaben</Navigation.TriggerText>
 				</Navigation.TriggerAnchor>
-				<form method="post" action="?/signOut" use:enhance>
-					<button class="btn preset-filled-primary-500">Sign out</button>
-				</form>
 				<Navigation.Trigger onclick={logout} class="btn preset-filled-primary-500">
 					Logout
 				</Navigation.Trigger>
