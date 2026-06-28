@@ -2,9 +2,24 @@
 	import './layout.css';
 	import favicon from '$lib/assets/favicon.svg';
 	import { Navigation } from '@skeletonlabs/skeleton-svelte';
+	import { enhance } from '$app/forms';
 	import type { LayoutProps } from './$types';
+	import { authClient } from '$lib/auth-client';
+	import { goto, invalidateAll } from '$app/navigation';
+	import { resolve } from '$app/paths';
 
 	let { children, data }: LayoutProps = $props();
+
+	async function logout() {
+		await authClient.signOut({
+			fetchOptions: {
+				onSuccess: async () => {
+					await invalidateAll();
+					goto(resolve('/auth/signin'));
+				}
+			}
+		});
+	}
 </script>
 
 <svelte:head><link rel="icon" href={favicon} /></svelte:head>
@@ -25,6 +40,12 @@
 				<Navigation.TriggerAnchor href="/tasks" class="btn preset-filled">
 					<Navigation.TriggerText class="text-lg">Heutige Aufgaben</Navigation.TriggerText>
 				</Navigation.TriggerAnchor>
+				<form method="post" action="?/signOut" use:enhance>
+					<button class="btn preset-filled-primary-500">Sign out</button>
+				</form>
+				<Navigation.Trigger onclick={logout} class="btn preset-filled-primary-500">
+					Logout
+				</Navigation.Trigger>
 			{/if}
 		</Navigation.Menu>
 	</Navigation.Content>
