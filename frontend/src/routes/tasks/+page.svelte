@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
+	import TaskItem from '$lib/components/TaskItem.svelte';
 
 	let { data } = $props();
 </script>
@@ -12,12 +13,9 @@
 		<a href={resolve('/tasks/create')} class="btn preset-filled-secondary-500">Neue Aufgabe</a>
 	</div>
 
-	<ul>
+	<ul class="space-y-4">
 		{#each data.tasks as task (task)}
-			<li>
-				<input class="checkbox" type="checkbox" />
-				<span>{task.name}</span>
-			</li>
+			<TaskItem {task} />
 		{/each}
 	</ul>
 </main>
