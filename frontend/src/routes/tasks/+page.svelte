@@ -13,9 +13,9 @@
 		<a href={resolve('/tasks/create')} class="btn preset-filled-secondary-500">Neue Aufgabe</a>
 	</div>
 
-	<ul class="space-y-4">
+	<div class="space-y-4">
 		{#each data.tasks as task (task)}
 			<TaskItem {task} />
 		{/each}
-	</ul>
+	</div>
 </main>
