@@ -29,14 +29,14 @@
 					<Dialog.Content
 						class="w-full max-w-xl space-y-4 card bg-surface-100-900 p-4 shadow-xl {addDialogAnimation}"
 					>
-						<header class="flex items-center justify-between">
-							<Dialog.Title class="text-lg font-bold">Neue Aufgabe</Dialog.Title>
-							<Dialog.CloseTrigger class="btn-icon hover:preset-tonal">
-								<XIcon class="size-4" />
-							</Dialog.CloseTrigger>
-						</header>
-						<Dialog.Description>
-							<form class="w-full max-w-md space-y-4 p-4" method="POST">
+						<form class="w-full max-w-md space-y-4 p-4" method="POST">
+							<header class="flex items-center justify-between">
+								<Dialog.Title class="text-lg font-bold">Neue Aufgabe</Dialog.Title>
+								<Dialog.CloseTrigger class="btn-icon hover:preset-tonal">
+									<XIcon class="size-4" />
+								</Dialog.CloseTrigger>
+							</header>
+							<Dialog.Description>
 								<fieldset class="space-y-4">
 									<Input label="Name" type="text" name="name" required />
 									<Textarea
@@ -58,16 +58,14 @@
 								<!-- TODO: Dynamic locale -->
 								<DatePicker required label="Start" name="start" value={[parseDate(new Date())]} />
 								<DatePicker label="Deadline" name="deadline" />
-
-								<fieldset class="flex justify-end">
-									<button type="submit" class="btn preset-filled-primary-500">Speichern</button>
-								</fieldset>
-							</form>
-						</Dialog.Description>
-						<footer class="flex justify-end gap-2">
-							<Dialog.CloseTrigger class="btn preset-tonal">Cancel</Dialog.CloseTrigger>
-							<button type="button" class="btn preset-filled">Save</button>
-						</footer>
+							</Dialog.Description>
+							<footer class="flex justify-end gap-2">
+								<Dialog.CloseTrigger class="btn preset-tonal">Cancel</Dialog.CloseTrigger>
+								<Dialog.CloseTrigger type="submit" class="btn preset-filled-primary-500">
+									Speichern
+								</Dialog.CloseTrigger>
+							</footer>
+						</form>
 					</Dialog.Content>
 				</Dialog.Positioner>
 			</Portal>
