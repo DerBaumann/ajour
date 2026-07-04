@@ -21,7 +21,6 @@ const proxy: RequestHandler = async ({ request, url }) => {
 	});
 
 	const data = await response.json();
-	console.log(data);
 	return json(data, { status: response.status });
 };
 

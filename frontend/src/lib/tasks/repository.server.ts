@@ -5,7 +5,6 @@ export async function fetchAllTasks(fetchFn: typeof fetch): Promise<Result<Task[
 	const res = await fetchFn('api/tasks');
 	if (!res.ok) {
 		const e = await res.text();
-		console.error(e);
 		return err(e);
 	}
 	const tasks = await res.json();
@@ -16,7 +15,6 @@ export async function fetchCurrentTasks(fetchFn: typeof fetch): Promise<Result<T
 	const res = await fetchFn('/api/tasks/current');
 	if (!res.ok) {
 		const e = await res.text();
-		console.error(e);
 		return err(e);
 	}
 	const tasks = await res.json();
@@ -36,7 +34,6 @@ export async function createTask(
 	});
 	if (!res.ok) {
 		const e = await res.text();
-		console.error(e);
 		return err(e);
 	}
 

@@ -3,12 +3,13 @@
 
 	interface Props {
 		label: string;
+		name: string;
 		value?: DateValue[];
 		placeholder?: string;
 		required?: boolean;
 	}
 
-	let { value = [], required = false, label, placeholder = 'yyyy-mm-dd' }: Props = $props();
+	let { value = [], name, required = false, label, placeholder = 'yyyy-mm-dd' }: Props = $props();
 
 	// let locale = $state('');
 	//
@@ -125,5 +126,5 @@
 </DatePicker>
 
 {#if value?.[0]}
-	<input type="hidden" name="start" value={toApiDate(value[0])} />
+	<input type="hidden" {name} {required} value={toApiDate(value[0])} />
 {/if}

@@ -14,11 +14,14 @@ export const actions = {
 	default: async ({ request, fetch }) => {
 		const form = await request.formData();
 		const data = Object.fromEntries(form.entries());
+		console.log(data);
 
 		const { data: task, error: e } = CreateTask.safeParse(data);
 		if (e) {
 			error(400, { message: e.message });
 		}
+
+		console.log(task);
 
 		const res = await fetch('/api/tasks', {
 			method: 'POST',

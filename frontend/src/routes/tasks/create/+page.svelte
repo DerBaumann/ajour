@@ -33,8 +33,8 @@
 	</fieldset>
 
 	<!-- TODO: Dynamic locale -->
-	<DatePicker required label="start" value={[parseDate(new Date())]} />
-	<DatePicker label="deadline" />
+	<DatePicker required label="Start" name="start" value={[parseDate(new Date())]} />
+	<DatePicker label="Deadline" name="deadline" />
 
 	<fieldset class="flex justify-end">
 		<button type="submit" class="btn preset-filled-primary-500">Speichern</button>

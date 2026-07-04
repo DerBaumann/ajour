@@ -9,7 +9,7 @@
 	const { task }: Props = $props();
 </script>
 
-<div class="flex w-max items-center gap-4 card bg-surface-100 p-4 shadow-sm">
+<div class="flex w-max items-center gap-4 card bg-surface-100 p-4 shadow-sm dark:bg-surface-900">
 	<input class="checkbox" type="checkbox" checked={task.completed} />
 	<div>
 		{#if task.priority === 'very_high'}

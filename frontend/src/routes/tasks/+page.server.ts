@@ -8,7 +8,6 @@ export async function load({ locals, fetch }) {
 	const res = await fetch('/api/tasks/current');
 	if (!res.ok) {
 		const e = await res.text();
-		console.error(e);
 		error(500, { message: e });
 	}
 	const tasks = await res.json();
