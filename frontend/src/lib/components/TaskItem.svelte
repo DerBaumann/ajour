@@ -27,6 +27,8 @@
 	<div>
 		<p><strong class="font-bold">{task.name}</strong></p>
 		<p>{task.description}</p>
-		<p class="text-surface-500">fällig bis {task.deadline?.toString()}</p>
+		{#if task.deadline}
+			<p class="text-surface-500">fällig bis {task.deadline.toString()}</p>
+		{/if}
 	</div>
 </div>
