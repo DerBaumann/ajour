@@ -20,7 +20,6 @@
 
 	<!-- TODO: Filter & Sorting -->
 	<div id="toolbar">
-		<a href={resolve('/tasks/create')} class="btn preset-filled-secondary-500">Neue Aufgabe</a>
 		<Dialog>
 			<Dialog.Trigger class="btn preset-filled-secondary-500">Neue Aufgabe</Dialog.Trigger>
 			<Portal>
@@ -29,7 +28,7 @@
 					<Dialog.Content
 						class="w-full max-w-xl space-y-4 card bg-surface-100-900 p-4 shadow-xl {addDialogAnimation}"
 					>
-						<form class="w-full max-w-md space-y-4 p-4" method="POST">
+						<form class="w-full max-w-md space-y-4 p-4" method="POST" action="?/create">
 							<header class="flex items-center justify-between">
 								<Dialog.Title class="text-lg font-bold">Neue Aufgabe</Dialog.Title>
 								<Dialog.CloseTrigger class="btn-icon hover:preset-tonal">
