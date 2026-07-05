@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { enhance } from '$app/forms';
 	import { resolve } from '$app/paths';
 	import DatePicker from '$lib/components/DatePicker.svelte';
 	import Input from '$lib/components/Input.svelte';
@@ -20,6 +21,9 @@
 
 	<!-- TODO: Filter & Sorting -->
 	<div id="toolbar">
+		<!-- TODO: Move dialog to its own component -->
+		<!-- TODO: use enhance -->
+		<!-- TODO: reset form on successful submit -->
 		<Dialog>
 			<Dialog.Trigger class="btn preset-filled-secondary-500">Neue Aufgabe</Dialog.Trigger>
 			<Portal>
@@ -28,7 +32,32 @@
 					<Dialog.Content
 						class="w-full max-w-xl space-y-4 card bg-surface-100-900 p-4 shadow-xl {addDialogAnimation}"
 					>
-						<form class="w-full max-w-md space-y-4 p-4" method="POST" action="?/create">
+						<form
+							class="w-full max-w-md space-y-4 p-4"
+							method="POST"
+							action="?/create"
+							use:enhance={({ formElement, formData, action, cancel, submitter }) => {
+								// `formElement` is this `<form>` element
+								// `formData` is its `FormData` object that's about to be submitted
+								// `action` is the URL to which the form is posted
+								// calling `cancel()` will prevent the submission
+								// `submitter` is the `HTMLElement` that caused the form to be submitted
+
+								console.log('Submitting');
+
+								return async ({ result, update }) => {
+									console.log('callback');
+									// `result` is an `ActionResult` object
+									// `update` is a function which triggers the default logic that would be triggered if this callback wasn't set
+									switch (result.type) {
+										case 'success':
+										case 'redirect':
+										case 'error':
+										case 'failure':
+									}
+								};
+							}}
+						>
 							<header class="flex items-center justify-between">
 								<Dialog.Title class="text-lg font-bold">Neue Aufgabe</Dialog.Title>
 								<Dialog.CloseTrigger class="btn-icon hover:preset-tonal">
