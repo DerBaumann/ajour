@@ -34,7 +34,7 @@
 	</DatePicker.Control>
 	<Portal>
 		<DatePicker.Positioner>
-			<DatePicker.Content>
+			<DatePicker.Content class="z-50">
 				<DatePicker.View view="day">
 					<DatePicker.Context>
 						{#snippet children(datePicker)}

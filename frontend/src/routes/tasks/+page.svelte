@@ -7,7 +7,7 @@
 	import TaskItem from '$lib/components/TaskItem.svelte';
 	import Textarea from '$lib/components/Textarea.svelte';
 	import { XIcon } from '@lucide/svelte';
-	import { Dialog, parseDate, Portal } from '@skeletonlabs/skeleton-svelte';
+	import { Dialog, parseDate, Portal, useDialog } from '@skeletonlabs/skeleton-svelte';
 
 	let { data } = $props();
 
@@ -22,8 +22,7 @@
 	<!-- TODO: Filter & Sorting -->
 	<div id="toolbar">
 		<!-- TODO: Move dialog to its own component -->
-		<!-- TODO: use enhance -->
-		<!-- TODO: reset form on successful submit -->
+		<!-- TODO: close dialog only on successfull submit -->
 		<Dialog>
 			<Dialog.Trigger class="btn preset-filled-secondary-500">Neue Aufgabe</Dialog.Trigger>
 			<Portal>
@@ -37,23 +36,14 @@
 							method="POST"
 							action="?/create"
 							use:enhance={({ formElement, formData, action, cancel, submitter }) => {
-								// `formElement` is this `<form>` element
-								// `formData` is its `FormData` object that's about to be submitted
-								// `action` is the URL to which the form is posted
-								// calling `cancel()` will prevent the submission
-								// `submitter` is the `HTMLElement` that caused the form to be submitted
-
-								console.log('Submitting');
-
 								return async ({ result, update }) => {
-									console.log('callback');
-									// `result` is an `ActionResult` object
-									// `update` is a function which triggers the default logic that would be triggered if this callback wasn't set
-									switch (result.type) {
-										case 'success':
-										case 'redirect':
-										case 'error':
-										case 'failure':
+									await update();
+									console.log(result.type);
+
+									if (result.type === 'success') {
+										// close dialog
+										// reset form
+										formElement.reset();
 									}
 								};
 							}}

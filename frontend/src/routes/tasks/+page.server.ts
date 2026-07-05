@@ -47,6 +47,8 @@ export const actions = {
 			return error(res.status, { message: e });
 		}
 
-		redirect(303, '/tasks');
+		return {
+			success: true
+		};
 	}
 };
