@@ -1,13 +1,12 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import { resolve } from '$app/paths';
 	import DatePicker from '$lib/components/DatePicker.svelte';
 	import Input from '$lib/components/Input.svelte';
 	import RadioButton from '$lib/components/RadioButton.svelte';
 	import TaskItem from '$lib/components/TaskItem.svelte';
 	import Textarea from '$lib/components/Textarea.svelte';
 	import { XIcon } from '@lucide/svelte';
-	import { Dialog, parseDate, Portal, useDialog } from '@skeletonlabs/skeleton-svelte';
+	import { Dialog, parseDate, Portal } from '@skeletonlabs/skeleton-svelte';
 
 	let { data } = $props();
 
