@@ -1,4 +1,4 @@
-import { CreateTask } from '$lib/tasks/types';
+import { CreateTask, type TaskError } from '$lib/tasks/types';
 import { error, fail, redirect } from '@sveltejs/kit';
 
 export async function load({ locals, fetch }) {
@@ -20,7 +20,6 @@ export async function load({ locals, fetch }) {
 }
 
 export const actions = {
-	// TODO: Proper error type
 	create: async ({ request, fetch }) => {
 		const form = await request.formData();
 		const data = Object.fromEntries(form.entries());
@@ -28,7 +27,7 @@ export const actions = {
 
 		const { data: task, error: e } = CreateTask.safeParse(data);
 		if (e) {
-			return fail(400, { message: e.message });
+			return fail<TaskError>(400, { type: 'zod_error', issues: e.issues });
 		}
 
 		console.log(task);
@@ -44,7 +43,7 @@ export const actions = {
 		if (!res.ok) {
 			const e = await res.text();
 			console.error(e);
-			return fail(res.status, { message: e });
+			return fail<TaskError>(res.status, { type: 'http_error', status: res.status, message: e });
 		}
 
 		return {

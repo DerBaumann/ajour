@@ -1,4 +1,5 @@
 import z from 'zod';
+import type { $ZodIssue } from 'zod/v4/core';
 
 export const Priority = z.enum(['very_high', 'high', 'medium', 'low']);
 export type Priority = z.infer<typeof Priority>;
@@ -24,3 +25,7 @@ export const Task = z.object({
 	created_at: z.coerce.date()
 });
 export type Task = z.infer<typeof Task>;
+
+export type TaskError =
+	| { type: 'zod_error'; issues: $ZodIssue[] }
+	| { type: 'http_error'; status: number; message: string };

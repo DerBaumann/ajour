@@ -27,7 +27,7 @@
 					class="w-full max-w-md space-y-4 p-4"
 					method="POST"
 					action="?/create"
-					use:enhance={({ formElement, formData, action, cancel, submitter }) => {
+					use:enhance={({ formElement }) => {
 						return async ({ result, update }) => {
 							await update();
 							console.log(result.type);
