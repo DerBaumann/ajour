@@ -14,7 +14,7 @@
 	let open = $state(false);
 </script>
 
-<!-- TODO: close dialog only on successfull submit -->
+<!-- TODO: Error handling -->
 <Dialog {open} onOpenChange={({ open: o }) => (open = o)}>
 	<Dialog.Trigger class="btn preset-filled-secondary-500">Neue Aufgabe</Dialog.Trigger>
 	<Portal>

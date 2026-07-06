@@ -1,5 +1,5 @@
 import { CreateTask } from '$lib/tasks/types';
-import { error, redirect } from '@sveltejs/kit';
+import { error, fail, redirect } from '@sveltejs/kit';
 
 export async function load({ locals, fetch }) {
 	if (!locals.user) {
@@ -20,7 +20,7 @@ export async function load({ locals, fetch }) {
 }
 
 export const actions = {
-	// TODO: replace error with fail
+	// TODO: Proper error type
 	create: async ({ request, fetch }) => {
 		const form = await request.formData();
 		const data = Object.fromEntries(form.entries());
@@ -28,7 +28,7 @@ export const actions = {
 
 		const { data: task, error: e } = CreateTask.safeParse(data);
 		if (e) {
-			error(400, { message: e.message });
+			return fail(400, { message: e.message });
 		}
 
 		console.log(task);
@@ -44,7 +44,7 @@ export const actions = {
 		if (!res.ok) {
 			const e = await res.text();
 			console.error(e);
-			return error(res.status, { message: e });
+			return fail(res.status, { message: e });
 		}
 
 		return {
