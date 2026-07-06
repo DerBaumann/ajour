@@ -10,10 +10,12 @@
 	const addDialogAnimation = `transition transition-discrete opacity-0 translate-y-[100px]
       starting:data-[state=open]:opacity-0 starting:data-[state=open]:translate-y-[100px]
       data-[state=open]:opacity-100 data-[state=open]:translate-y-0`;
+
+	let open = $state(false);
 </script>
 
 <!-- TODO: close dialog only on successfull submit -->
-<Dialog>
+<Dialog {open} onOpenChange={({ open: o }) => (open = o)}>
 	<Dialog.Trigger class="btn preset-filled-secondary-500">Neue Aufgabe</Dialog.Trigger>
 	<Portal>
 		<Dialog.Backdrop class="fixed inset-0 z-50 bg-surface-50-950/50" />
@@ -31,9 +33,8 @@
 							console.log(result.type);
 
 							if (result.type === 'success' || result.type === 'redirect') {
-								// close dialog
-								// reset form
 								formElement.reset();
+								open = false;
 							}
 						};
 					}}
@@ -69,9 +70,7 @@
 					</Dialog.Description>
 					<footer class="flex justify-end gap-2">
 						<Dialog.CloseTrigger class="btn preset-tonal">Cancel</Dialog.CloseTrigger>
-						<Dialog.CloseTrigger type="submit" class="btn preset-filled-primary-500">
-							Speichern
-						</Dialog.CloseTrigger>
+						<button type="submit" class="btn preset-filled-primary-500">Speichern</button>
 					</footer>
 				</form>
 			</Dialog.Content>
