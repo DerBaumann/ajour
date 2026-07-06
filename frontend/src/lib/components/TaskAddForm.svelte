@@ -6,15 +6,21 @@
 	import Input from './Input.svelte';
 	import RadioButton from './RadioButton.svelte';
 	import Textarea from './Textarea.svelte';
+	import type { TaskError } from '$lib/tasks/types';
 
 	const addDialogAnimation = `transition transition-discrete opacity-0 translate-y-[100px]
       starting:data-[state=open]:opacity-0 starting:data-[state=open]:translate-y-[100px]
       data-[state=open]:opacity-100 data-[state=open]:translate-y-0`;
 
+	type Props = {
+		error: TaskError | undefined;
+	};
+
+	let { error }: Props = $props();
+
 	let open = $state(false);
 </script>
 
-<!-- TODO: Error handling -->
 <Dialog {open} onOpenChange={({ open: o }) => (open = o)}>
 	<Dialog.Trigger class="btn preset-filled-secondary-500">Neue Aufgabe</Dialog.Trigger>
 	<Portal>
@@ -67,6 +73,18 @@
 						<!-- TODO: Dynamic locale -->
 						<DatePicker required label="Start" name="start" value={[parseDate(new Date())]} />
 						<DatePicker label="Deadline" name="deadline" />
+
+						<div>
+							{#if error}
+								{#if error.type === 'zod_error'}
+									{#each error.issues.map((i) => i.message) as e (e)}
+										<p class="text-error-500">{e}</p>
+									{/each}
+								{:else if error.type === 'http_error'}
+									<p class="text-error-500">{error.status}: {error.message}</p>
+								{/if}
+							{/if}
+						</div>
 					</Dialog.Description>
 					<footer class="flex justify-end gap-2">
 						<Dialog.CloseTrigger class="btn preset-tonal">Cancel</Dialog.CloseTrigger>

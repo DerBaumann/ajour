@@ -1,8 +1,9 @@
 <script lang="ts">
 	import TaskAddForm from '$lib/components/TaskAddForm.svelte';
 	import TaskItem from '$lib/components/TaskItem.svelte';
+	import type { PageProps } from './$types';
 
-	let { data } = $props();
+	let { data, form }: PageProps = $props();
 </script>
 
 <main class="space-y-4">
@@ -10,7 +11,7 @@
 
 	<!-- TODO: Filter & Sorting -->
 	<div id="toolbar">
-		<TaskAddForm />
+		<TaskAddForm error={form?.error} />
 	</div>
 
 	<div class="space-y-4">

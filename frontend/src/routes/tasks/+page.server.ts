@@ -19,6 +19,8 @@ export async function load({ locals, fetch }) {
 	};
 }
 
+type FormError = { error: TaskError };
+
 export const actions = {
 	create: async ({ request, fetch }) => {
 		const form = await request.formData();
@@ -27,7 +29,7 @@ export const actions = {
 
 		const { data: task, error: e } = CreateTask.safeParse(data);
 		if (e) {
-			return fail<TaskError>(400, { type: 'zod_error', issues: e.issues });
+			return fail<FormError>(400, { error: { type: 'zod_error', issues: e.issues } });
 		}
 
 		console.log(task);
@@ -43,7 +45,9 @@ export const actions = {
 		if (!res.ok) {
 			const e = await res.text();
 			console.error(e);
-			return fail<TaskError>(res.status, { type: 'http_error', status: res.status, message: e });
+			return fail<FormError>(res.status, {
+				error: { type: 'http_error', status: res.status, message: e }
+			});
 		}
 
 		return {
