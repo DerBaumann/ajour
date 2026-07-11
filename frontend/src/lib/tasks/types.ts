@@ -28,4 +28,5 @@ export type Task = z.infer<typeof Task>;
 
 export type TaskError =
 	| { type: 'zod_error'; issues: $ZodIssue[] }
-	| { type: 'http_error'; status: number; message: string };
+	| { type: 'http_error'; status: number; message?: string }
+	| { type: 'parse_error'; message: string };

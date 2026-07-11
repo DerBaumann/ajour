@@ -53,5 +53,29 @@ export const actions = {
 		return {
 			success: true
 		};
+	},
+
+	delete: async ({ request, fetch }) => {
+		const form = await request.formData();
+		const data = Object.fromEntries(form.entries());
+
+		const id = Number(data.id);
+		if (Number.isNaN(id)) {
+			return fail<FormError>(400, { error: { type: 'parse_error', message: 'Invalid Id' } });
+		}
+
+		const res = await fetch(`/api/tasks/${id}`, {
+			method: 'DELETE'
+		});
+
+		if (!res.ok) {
+			return fail<FormError>(res.status, {
+				error: { type: 'http_error', status: res.status }
+			});
+		}
+
+		return {
+			success: true
+		};
 	}
 };
