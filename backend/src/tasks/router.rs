@@ -3,7 +3,7 @@ use axum::{
     extract::{Path, State},
     http::StatusCode,
     response::Json,
-    routing::{delete, get, put},
+    routing::{delete, get, post, put},
 };
 use validator::Validate;
 
@@ -74,10 +74,20 @@ async fn toggle(
     }
 }
 
+async fn archive_completed(user: User, State(app_state): State<AppState>) -> Result<StatusCode> {
+    let result = queries::archive_all_completed_tasks(&app_state.db, &user.id).await?;
+    if result.rows_affected() == 0 {
+        Ok(StatusCode::NOT_FOUND)
+    } else {
+        Ok(StatusCode::NO_CONTENT)
+    }
+}
+
 pub fn task_routes() -> Router<AppState> {
     Router::new()
         .route("/", get(fetch_all).post(create))
         .route("/current", get(fetch_current))
         .route("/{id}", delete(delete_task))
         .route("/{id}/toggle", put(toggle))
+        .route("/archive-completed", post(archive_completed))
 }
