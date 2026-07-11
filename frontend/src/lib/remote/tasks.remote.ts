@@ -13,3 +13,15 @@ export const toggleTask = command(z.int(), async (id) => {
 		error(res.status, res.status === 404 ? 'Not found!' : await res.text());
 	}
 });
+
+export const archiveCompleted = command(async () => {
+	const { fetch } = getRequestEvent();
+
+	const res = await fetch(`/api/tasks/archive-completed`, {
+		method: 'POST'
+	});
+
+	if (!res.ok) {
+		error(res.status, res.status === 404 ? 'Not found!' : await res.text());
+	}
+});
