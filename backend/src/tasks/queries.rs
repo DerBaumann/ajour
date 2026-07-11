@@ -105,12 +105,25 @@ pub async fn toggle_task(
 ) -> Result<PgQueryResult, sqlx::Error> {
     sqlx::query!(
         r#"UPDATE task
-        SET
-        completed = NOT completed
+        SET completed = NOT completed
         WHERE user_id = $1
         AND id = $2"#,
         user_id,
         id
+    )
+    .execute(db)
+    .await
+}
+
+pub async fn archive_all_completed_tasks(
+    db: &PgPool,
+    user_id: &str,
+) -> Result<PgQueryResult, sqlx::Error> {
+    sqlx::query!(
+        r#"UPDATE task
+        SET archived_at = now()
+        WHERE user_id = $1"#,
+        user_id,
     )
     .execute(db)
     .await
