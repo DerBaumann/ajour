@@ -30,7 +30,6 @@ async fn fetch_all(user: User, State(app_state): State<AppState>) -> Result<Json
 #[axum::debug_handler]
 #[tracing::instrument(skip(app_state))]
 async fn fetch_current(user: User, State(app_state): State<AppState>) -> Result<Json<Vec<Task>>> {
-    tracing::debug!("Working");
     let tasks = queries::fetch_current_tasks(&app_state.db, &user.id).await?;
     tracing::debug!(?tasks);
     Ok(Json(tasks))

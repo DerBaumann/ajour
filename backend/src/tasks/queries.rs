@@ -40,7 +40,8 @@ pub async fn create_task(
 pub async fn fetch_all_tasks(db: &PgPool, user_id: &str) -> Result<Vec<Task>, sqlx::Error> {
     sqlx::query_as!(
         Task,
-        r#"SELECT id,
+        r#"SELECT
+            id,
             name,
             description,
             completed,
@@ -49,7 +50,10 @@ pub async fn fetch_all_tasks(db: &PgPool, user_id: &str) -> Result<Vec<Task>, sq
             deadline,
             user_id,
             archived_at,
-            created_at FROM task WHERE user_id = $1"#,
+            created_at
+        FROM task
+        WHERE user_id = $1
+        ORDER BY name ASC"#,
         user_id
     )
     .fetch_all(db)
@@ -59,7 +63,8 @@ pub async fn fetch_all_tasks(db: &PgPool, user_id: &str) -> Result<Vec<Task>, sq
 pub async fn fetch_current_tasks(db: &PgPool, user_id: &str) -> Result<Vec<Task>, sqlx::Error> {
     sqlx::query_as!(
         Task,
-        r#"SELECT id,
+        r#"SELECT
+            id,
             name,
             description,
             completed,
@@ -68,7 +73,11 @@ pub async fn fetch_current_tasks(db: &PgPool, user_id: &str) -> Result<Vec<Task>
             deadline,
             user_id,
             archived_at,
-            created_at FROM task WHERE user_id = $1 AND start <= CURRENT_DATE"#,
+            created_at
+        FROM task
+        WHERE user_id = $1
+            AND start <= CURRENT_DATE
+        ORDER BY name ASC"#,
         user_id
     )
     .fetch_all(db)
