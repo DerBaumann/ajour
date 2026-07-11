@@ -53,6 +53,7 @@ pub async fn fetch_all_tasks(db: &PgPool, user_id: &str) -> Result<Vec<Task>, sq
             created_at
         FROM task
         WHERE user_id = $1
+            AND archived_at IS NULL
         ORDER BY name ASC"#,
         user_id
     )
@@ -77,6 +78,7 @@ pub async fn fetch_current_tasks(db: &PgPool, user_id: &str) -> Result<Vec<Task>
         FROM task
         WHERE user_id = $1
             AND start <= CURRENT_DATE
+            AND archived_at IS NULL
         ORDER BY name ASC"#,
         user_id
     )
