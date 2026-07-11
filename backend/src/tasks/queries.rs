@@ -98,7 +98,7 @@ pub async fn delete_task_by_id(
     .await
 }
 
-pub async fn complete_task_by_id(
+pub async fn toggle_task(
     db: &PgPool,
     user_id: &str,
     id: &i32,

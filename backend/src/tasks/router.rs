@@ -61,12 +61,12 @@ async fn delete_task(
     }
 }
 
-async fn complete(
+async fn toggle(
     Path(id): Path<i32>,
     user: User,
     State(app_state): State<AppState>,
 ) -> Result<StatusCode> {
-    let result = queries::complete_task_by_id(&app_state.db, &user.id, &id).await?;
+    let result = queries::toggle_task(&app_state.db, &user.id, &id).await?;
     if result.rows_affected() == 0 {
         Ok(StatusCode::NOT_FOUND)
     } else {
@@ -79,5 +79,5 @@ pub fn task_routes() -> Router<AppState> {
         .route("/", get(fetch_all).post(create))
         .route("/current", get(fetch_current))
         .route("/{id}", delete(delete_task))
-        .route("/{id}/complete", put(complete))
+        .route("/{id}/toggle", put(toggle))
 }

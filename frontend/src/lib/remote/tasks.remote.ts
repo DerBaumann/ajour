@@ -2,10 +2,10 @@ import { command, getRequestEvent } from '$app/server';
 import { error } from '@sveltejs/kit';
 import z from 'zod';
 
-export const completeTask = command(z.int(), async (id) => {
+export const toggleTask = command(z.int(), async (id) => {
 	const { fetch } = getRequestEvent();
 
-	const res = await fetch(`/api/tasks/${id}/complete`, {
+	const res = await fetch(`/api/tasks/${id}/toggle`, {
 		method: 'PUT'
 	});
 
