@@ -16,7 +16,7 @@
 	<h1 class="h1">Heutige Aufgaben</h1>
 
 	<!-- TODO: Filter & Sorting -->
-	<div id="toolbar" class="flex">
+	<div id="toolbar" class="flex gap-4">
 		<TaskAddForm error={form?.error} />
 
 		<Dialog>
