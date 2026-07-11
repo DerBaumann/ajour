@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import { completeTask } from '$lib/remote/tasks.remote';
 	import type { Task } from '$lib/tasks/types';
 	import { Asterisk, CircleAlert, CircleQuestionMark, Clock4, Flame, XIcon } from '@lucide/svelte';
 	import { Dialog, Portal } from '@skeletonlabs/skeleton-svelte';
@@ -54,7 +55,12 @@
 			</Dialog.Positioner>
 		</Portal>
 	</Dialog>
-	<input class="checkbox" type="checkbox" checked={task.completed} />
+	<input
+		onclick={async () => await completeTask(task.id)}
+		type="checkbox"
+		checked={task.completed}
+		class="checkbox"
+	/>
 	<div>
 		{#if task.priority === 'very_high'}
 			<Flame color="var(--color-red-500)" />
