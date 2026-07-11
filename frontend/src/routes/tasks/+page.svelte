@@ -11,13 +11,13 @@
 	<h1 class="h1">Heutige Aufgaben</h1>
 
 	<!-- TODO: Filter & Sorting -->
-	<div id="toolbar">
+	<div id="toolbar" class="flex">
 		<TaskAddForm error={form?.error} />
 
 		<!-- TODO: Confirmation dialog -->
-		<button onclick={async () => await archiveCompleted()} class="btn preset-filled-error-500"
-			>Archive Completed</button
-		>
+		<form {...archiveCompleted}>
+			<button type="submit" class="btn preset-filled-error-500">Archive Completed</button>
+		</form>
 	</div>
 
 	<div class="space-y-4">

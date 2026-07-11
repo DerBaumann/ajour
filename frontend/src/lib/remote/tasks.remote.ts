@@ -1,4 +1,4 @@
-import { command, getRequestEvent } from '$app/server';
+import { command, form, getRequestEvent } from '$app/server';
 import { error } from '@sveltejs/kit';
 import z from 'zod';
 
@@ -14,8 +14,9 @@ export const toggleTask = command(z.int(), async (id) => {
 	}
 });
 
-export const archiveCompleted = command(async () => {
+export const archiveCompleted = form(async () => {
 	const { fetch } = getRequestEvent();
+	console.log('working');
 
 	const res = await fetch(`/api/tasks/archive-completed`, {
 		method: 'POST'
