@@ -36,8 +36,6 @@
 					use:enhance={({ formElement }) => {
 						return async ({ result, update }) => {
 							await update();
-							console.log(result.type);
-
 							if (result.type === 'success' || result.type === 'redirect') {
 								formElement.reset();
 								open = false;

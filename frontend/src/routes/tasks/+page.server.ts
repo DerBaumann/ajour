@@ -25,14 +25,11 @@ export const actions = {
 	create: async ({ request, fetch }) => {
 		const form = await request.formData();
 		const data = Object.fromEntries(form.entries());
-		console.log(data);
 
 		const { data: task, error: e } = CreateTask.safeParse(data);
 		if (e) {
 			return fail<FormError>(400, { error: { type: 'zod_error', issues: e.issues } });
 		}
-
-		console.log(task);
 
 		const res = await fetch('/api/tasks', {
 			method: 'POST',
@@ -44,7 +41,6 @@ export const actions = {
 
 		if (!res.ok) {
 			const e = await res.text();
-			console.error(e);
 			return fail<FormError>(res.status, {
 				error: { type: 'http_error', status: res.status, message: e }
 			});
