@@ -124,7 +124,8 @@ pub async fn archive_all_completed_tasks(
     sqlx::query!(
         r#"UPDATE task
         SET archived_at = now()
-        WHERE user_id = $1"#,
+        WHERE user_id = $1
+            AND completed = true"#,
         user_id,
     )
     .execute(db)
