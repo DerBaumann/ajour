@@ -54,7 +54,7 @@ async fn delete_task(
     user: User,
     State(app_state): State<AppState>,
 ) -> Result<StatusCode> {
-    let result = queries::delete_task_by_id(&app_state.db, &user.id, id).await?;
+    let result = queries::delete_task_by_id(&app_state.db, &user.id, &id).await?;
     if result.rows_affected() == 0 {
         Ok(StatusCode::NOT_FOUND)
     } else {
@@ -67,7 +67,7 @@ async fn complete(
     user: User,
     State(app_state): State<AppState>,
 ) -> Result<StatusCode> {
-    let result = queries::complete_task_by_id(&app_state.db, &user.id, id).await?;
+    let result = queries::complete_task_by_id(&app_state.db, &user.id, &id).await?;
     if result.rows_affected() == 0 {
         Ok(StatusCode::NOT_FOUND)
     } else {
