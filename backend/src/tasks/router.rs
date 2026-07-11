@@ -1,4 +1,10 @@
-use axum::{Router, extract::State, http::StatusCode, response::Json, routing::get};
+use axum::{
+    Router,
+    extract::{Path, State},
+    http::StatusCode,
+    response::Json,
+    routing::{delete, get},
+};
 use validator::Validate;
 
 use crate::{
@@ -43,8 +49,22 @@ async fn create(
     Ok((StatusCode::CREATED, Json(task)))
 }
 
+async fn delete_task(
+    Path(id): Path<i32>,
+    user: User,
+    State(app_state): State<AppState>,
+) -> Result<StatusCode> {
+    let result = queries::delete_task_by_id(&app_state.db, &user.id, id).await?;
+    if result.rows_affected() == 0 {
+        Ok(StatusCode::NOT_FOUND)
+    } else {
+        Ok(StatusCode::NO_CONTENT)
+    }
+}
+
 pub fn task_routes() -> Router<AppState> {
     Router::new()
         .route("/", get(fetch_all).post(create))
         .route("/current", get(fetch_current))
+        .route("/{id}", delete(delete_task))
 }

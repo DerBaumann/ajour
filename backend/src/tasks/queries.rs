@@ -1,4 +1,4 @@
-use sqlx::PgPool;
+use sqlx::{PgPool, postgres::PgQueryResult};
 
 use crate::tasks::models::{CreateTask, Priority, Task};
 
@@ -75,14 +75,16 @@ pub async fn fetch_current_tasks(db: &PgPool, user_id: &str) -> Result<Vec<Task>
     .await
 }
 
-pub async fn delete_todo_by_id(db: &PgPool, user_id: &str, id: i32) -> Result<(), sqlx::Error> {
+pub async fn delete_task_by_id(
+    db: &PgPool,
+    user_id: &str,
+    id: i32,
+) -> Result<PgQueryResult, sqlx::Error> {
     sqlx::query!(
         r#"DELETE FROM task WHERE user_id = $1 AND id = $2"#,
         user_id,
         id
     )
     .execute(db)
-    .await?;
-
-    Ok(())
+    .await
 }
