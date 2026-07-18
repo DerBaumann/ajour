@@ -54,6 +54,7 @@ async fn update_task(
     State(app_state): State<AppState>,
     Json(fields): Json<UpdateTask>,
 ) -> Result<(StatusCode, Json<Task>)> {
+    fields.validate()?;
     let task = queries::update_task(&app_state.db, fields, &user.id, &id).await?;
     Ok((StatusCode::OK, Json(task)))
 }
