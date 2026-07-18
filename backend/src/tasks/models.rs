@@ -41,3 +41,15 @@ pub struct CreateTask {
     pub start: Date,
     pub deadline: Option<Date>,
 }
+
+#[derive(Debug, Deserialize, Validate)]
+pub struct UpdateTask {
+    #[validate(length(max = 50))]
+    pub name: Option<String>,
+    #[validate(length(max = 300))]
+    #[serde(deserialize_with = "blank_as_none")]
+    pub description: Option<String>,
+    pub priority: Option<Priority>,
+    pub start: Option<Date>,
+    pub deadline: Option<Date>,
+}

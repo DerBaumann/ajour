@@ -1,6 +1,6 @@
 use sqlx::{PgPool, postgres::PgQueryResult};
 
-use crate::tasks::models::{CreateTask, Priority, Task};
+use crate::tasks::models::{CreateTask, Priority, Task, UpdateTask};
 
 // TODO: Format Query sql
 
@@ -83,6 +83,49 @@ pub async fn fetch_current_tasks(db: &PgPool, user_id: &str) -> Result<Vec<Task>
         user_id
     )
     .fetch_all(db)
+    .await
+}
+
+pub async fn update_task(
+    db: &PgPool,
+    task: UpdateTask,
+    user_id: &str,
+    id: &i32,
+) -> Result<Task, sqlx::Error> {
+    sqlx::query_as!(
+        Task,
+        r#"
+        UPDATE task
+        SET
+            name = COALESCE($1, name),
+            description = COALESCE($2, description),
+            priority = COALESCE($3::priority, priority),
+            start = COALESCE($4, start),
+            deadline = COALESCE($5, deadline)
+        WHERE
+            id = $6
+            AND user_id = $7
+        RETURNING
+            id,
+            name,
+            description,
+            completed,
+            priority as "priority: Priority",
+            start,
+            deadline,
+            user_id,
+            archived_at,
+            created_at
+        "#,
+        task.name,
+        task.description,
+        task.priority as Option<Priority>,
+        task.start,
+        task.deadline,
+        id,
+        user_id
+    )
+    .fetch_one(db)
     .await
 }
 
