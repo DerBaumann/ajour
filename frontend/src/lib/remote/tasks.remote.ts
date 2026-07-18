@@ -1,6 +1,35 @@
 import { command, form, getRequestEvent } from '$app/server';
-import { error } from '@sveltejs/kit';
+import { Task, UpdateTask, type TaskError } from '$lib/tasks/types';
+import { error, fail } from '@sveltejs/kit';
 import z from 'zod';
+
+type FormError = { error: TaskError };
+
+export const updateTask = form(
+	z.object({ id: z.int(), fields: UpdateTask }),
+	async ({ id, fields }) => {
+		const res = await fetch(`/api/tasks/${id}`, {
+			method: 'PUT',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(fields)
+		});
+
+		if (!res.ok) {
+			const e = await res.text();
+			return fail<FormError>(res.status, {
+				error: { type: 'http_error', status: res.status, message: e }
+			});
+		}
+
+		const updated = Task.parse(await res.json());
+
+		return {
+			task: updated
+		};
+	}
+);
 
 export const toggleTask = command(z.int(), async (id) => {
 	const { fetch } = getRequestEvent();
