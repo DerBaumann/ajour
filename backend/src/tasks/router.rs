@@ -11,7 +11,7 @@ use crate::{
     core::AppState,
     tasks::{
         errors::TaskError,
-        models::{CreateTask, Task},
+        models::{CreateTask, Task, UpdateTask},
         queries::{self},
     },
     users::User,
@@ -46,6 +46,16 @@ async fn create(
     let task = queries::create_task(&app_state.db, fields, &user.id).await?;
     tracing::debug!(?task);
     Ok((StatusCode::CREATED, Json(task)))
+}
+
+async fn update_task(
+    Path(id): Path<i32>,
+    user: User,
+    State(app_state): State<AppState>,
+    Json(fields): Json<UpdateTask>,
+) -> Result<(StatusCode, Json<Task>)> {
+    let task = queries::update_task(&app_state.db, fields, &user.id, &id).await?;
+    Ok((StatusCode::OK, Json(task)))
 }
 
 async fn delete_task(
@@ -87,7 +97,7 @@ pub fn task_routes() -> Router<AppState> {
     Router::new()
         .route("/", get(fetch_all).post(create))
         .route("/current", get(fetch_current))
-        .route("/{id}", delete(delete_task))
+        .route("/{id}", delete(delete_task).put(update_task))
         .route("/{id}/toggle", put(toggle))
         .route("/archive-completed", post(archive_completed))
 }
