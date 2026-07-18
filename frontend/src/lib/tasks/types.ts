@@ -13,6 +13,15 @@ export const CreateTask = z.object({
 });
 export type CreateTask = z.infer<typeof CreateTask>;
 
+export const UpdateTask = z.object({
+	name: z.string().max(50).optional(),
+	description: z.string().max(300).optional(),
+	priority: Priority.optional(),
+	start: z.string().optional(),
+	deadline: z.string().optional()
+});
+export type UpdateTask = z.infer<typeof UpdateTask>;
+
 export const Task = z.object({
 	id: z.number(),
 	name: z.string(),
