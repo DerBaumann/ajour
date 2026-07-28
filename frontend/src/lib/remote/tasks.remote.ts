@@ -6,14 +6,14 @@ import z from 'zod';
 type FormError = { error: TaskError };
 
 export const updateTask = form(
-	z.object({ id: z.int(), fields: UpdateTask }),
-	async ({ id, fields }) => {
+	z.object({ id: z.int(), data: UpdateTask }),
+	async ({ id, data }) => {
 		const res = await fetch(`/api/tasks/${id}`, {
 			method: 'PUT',
 			headers: {
 				'Content-Type': 'application/json'
 			},
-			body: JSON.stringify(fields)
+			body: JSON.stringify(data)
 		});
 
 		if (!res.ok) {
