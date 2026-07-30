@@ -8,19 +8,24 @@
       data-[state=open]:opacity-100 data-[state=open]:translate-y-0`;
 
 	type Props = {
+		open?: boolean;
 		title: string;
-		trigger: Snippet<[]>;
+		trigger: string | Snippet<[]>;
 		content: Snippet<[]>;
 		footer: Snippet<[]>;
 	};
 
-	let { title, trigger, content, footer }: Props = $props();
-
-	let open = $state(false);
+	let { open = $bindable(false), title, trigger, content, footer }: Props = $props();
 </script>
 
 <Dialog {open} onOpenChange={({ open: o }) => (open = o)}>
-	<Dialog.Trigger class="btn preset-filled-secondary-500">{@render trigger()}</Dialog.Trigger>
+	<Dialog.Trigger class="btn preset-filled-secondary-500">
+		{#if typeof trigger === 'string'}
+			{trigger}
+		{:else}
+			{@render trigger()}
+		{/if}
+	</Dialog.Trigger>
 	<Portal>
 		<Dialog.Backdrop class="fixed inset-0 z-50 bg-surface-50-950/50" />
 		<Dialog.Positioner class="fixed inset-0 z-50 flex items-center justify-center p-4">
