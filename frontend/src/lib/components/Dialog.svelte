@@ -11,7 +11,7 @@
 		open?: boolean;
 		title: string;
 		trigger: string | Snippet<[]>;
-		content: Snippet<[]>;
+		content?: Snippet<[]>;
 		footer: Snippet<[]>;
 	};
 
@@ -38,9 +38,11 @@
 						<XIcon class="size-4" />
 					</Dialog.CloseTrigger>
 				</header>
-				<Dialog.Description>
-					{@render content()}
-				</Dialog.Description>
+				{#if content}
+					<Dialog.Description>
+						{@render content()}
+					</Dialog.Description>
+				{/if}
 				<footer class="flex justify-end gap-2">
 					<Dialog.CloseTrigger class="btn preset-tonal">Cancel</Dialog.CloseTrigger>
 					{@render footer()}

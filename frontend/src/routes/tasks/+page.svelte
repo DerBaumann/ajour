@@ -19,6 +19,7 @@
 	<div id="toolbar" class="flex gap-4">
 		<TaskAddForm error={form?.error} />
 
+		<!-- TODO: Use custom dialog -->
 		<Dialog>
 			<Dialog.Trigger class="btn preset-filled-error-500">Archive completed</Dialog.Trigger>
 			<Portal>

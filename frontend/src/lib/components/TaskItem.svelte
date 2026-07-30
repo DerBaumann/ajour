@@ -18,6 +18,7 @@
 </script>
 
 <div class="flex w-max items-center gap-4 card bg-surface-100 p-4 shadow-sm dark:bg-surface-900">
+	<!-- TODO: Use custom dialog -->
 	<Dialog open={isDeleteDialogOpen} onOpenChange={({ open }) => (isDeleteDialogOpen = open)}>
 		<Dialog.Trigger class="btn-icon preset-filled-error-500">
 			<XIcon class="size-4" />
